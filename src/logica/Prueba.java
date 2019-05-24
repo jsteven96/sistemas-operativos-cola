@@ -5,13 +5,16 @@
  */
 package logica;
 
+import interfaz.InterfazProcesos;
+
 /**
  *
  * @author root
  */
 public class Prueba {
     
-    public static void main(String [] args){
+    public static void main(String [] args) throws Exception{
+        InterfazProcesos UI = new InterfazProcesos();
         Nodo nodo1 = new Nodo();
         
         Nodo nodo2 = new Nodo();
@@ -27,6 +30,8 @@ public class Prueba {
         
         Gestor miGestor = new Gestor(prueba);
         miGestor.atender();
+        
+        
         
     }
 }
