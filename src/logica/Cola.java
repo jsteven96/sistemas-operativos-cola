@@ -10,7 +10,7 @@ package logica;
  * @author root
  */
 public class Cola {
-    Nodo cabeza;
+    public Nodo cabeza;
     Nodo auxiliar;
 
     public Cola() {
