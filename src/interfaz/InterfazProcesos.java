@@ -11,6 +11,7 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.UIManager;
 import logica.Cola;
+import logica.Gestor;
 import logica.Nodo;
 
 
@@ -35,6 +36,8 @@ public class InterfazProcesos extends JFrame{
     public static final String ELIMINAR_PROCESO = "Eliminar procesos";
     public static final String SALIR = "Salir";
     private Lienzo miLienzo;
+    private Cola miCola;
+    private Gestor miGestor;
 
     public InterfazProcesos() throws Exception{
         super("Ejercicio cola de Procesos");
@@ -65,8 +68,22 @@ public class InterfazProcesos extends JFrame{
         btnAgregar.addActionListener(objControlador);
         btnSalir.addActionListener(objControlador);
         
+        //Creación de gestor
+        this.miCola = new Cola();
+        /*-----
+        Pruebas
+        -----*/
+        Nodo nodoA = new Nodo();
+        Nodo nodoB = new Nodo();
+        Nodo nodoC = new Nodo();
+        Nodo nodoD = new Nodo();
+        this.miCola.agregarNodo(nodoA);
+        this.miCola.agregarNodo(nodoB);
+        this.miCola.agregarNodo(nodoC);
+        this.miCola.agregarNodo(nodoD);
         
-        miLienzo = new Lienzo();
+        this.miGestor = new Gestor(miCola);
+        miLienzo = new Lienzo(miGestor);
         miLienzo.setSize(400, 200);
         
         
@@ -83,6 +100,8 @@ public class InterfazProcesos extends JFrame{
         panelBotones.add(btnEliminar);
         panelBotones.add(btnSalir);
         
+        panelBotones.add(taIdEliminar);
+        
         panelBotones.add(miLienzo);
         /*
         gbc.insets.top = 5;
@@ -93,6 +112,7 @@ public class InterfazProcesos extends JFrame{
         gbc.gridx = 0;
         gbc.gridy = 0;
         gridbag.setConstraints(lblProcesos, gbc);
+        
         
         
         gbc.gridx = 1;
@@ -114,6 +134,10 @@ public class InterfazProcesos extends JFrame{
         gbc.gridx = 2;
         gbc.gridy = 1;
         gridbag.setConstraints(btnEliminar, gbc);
+        
+        gbc.gridx = 3;
+        gbc.gridy = 1;
+        gridbag.setConstraints(taIdEliminar, gbc);
         
         
         gbc.gridx = 1;
@@ -140,9 +164,14 @@ public class InterfazProcesos extends JFrame{
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+
+    public void agregarProceso() {
+        this.miLienzo.agregarNodo();
+    }
     
-    
-    
-    
-    
+    public void eliminarProceso(){
+        if(taIdEliminar.getText()  != ""){
+            this.miLienzo.eliminarNodo(Integer.parseInt(taIdEliminar.getText()));
+        }
+    }
 }
