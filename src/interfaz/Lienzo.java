@@ -27,8 +27,8 @@ public class Lienzo extends Canvas implements Observador{
     
     public Lienzo(Gestor inpObjGestor){
         this.objGestor = inpObjGestor;
-        this.micola = this.objGestor.cola;
-        this.auxiliar = this.objGestor.cola.cabeza;
+        this.micola = this.objGestor.listos;
+        this.auxiliar = this.objGestor.listos.cabeza;
         
     }
     
@@ -52,7 +52,7 @@ public class Lienzo extends Canvas implements Observador{
      
      private void dibujarProcesos(Graphics g) {
         int x = 5, y = 20;
-        this.auxiliar = this.objGestor.cola.cabeza;
+        this.auxiliar = this.objGestor.listos.cabeza;
         while (this.auxiliar.siguiente.id != -1) {
 
             this.auxiliar = this.auxiliar.siguiente;
@@ -75,7 +75,7 @@ public class Lienzo extends Canvas implements Observador{
     public void actualizarDatos(Observable sujeto) {
         if(this.objGestor == sujeto){
             
-            this.auxiliar = this.objGestor.cola.cabeza;
+            this.auxiliar = this.objGestor.listos.cabeza;
             repaint();
                         
         }
@@ -89,12 +89,12 @@ public class Lienzo extends Canvas implements Observador{
     
     public void agregarNodo(){
         Nodo nuevo = new Nodo();
-        this.objGestor.cola.agregarNodo(nuevo);
+        this.objGestor.listos.agregarNodo(nuevo);
         repaint();
     }
     
     public void eliminarNodo(int indice){
-        this.objGestor.cola.eliminarNodo(indice);
+        this.objGestor.listos.eliminarNodo(indice);
         repaint();
     }
     

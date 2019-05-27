@@ -14,24 +14,26 @@ import interfaz.Observador;
  */
 public class Gestor implements Observable {
 
-    public Cola cola;
+    public Cola listos;
+    public Cola terminados;
     public Nodo auxiliar;
     public Observador observador;
     
 
     public Gestor(Cola cola) {
-        this.cola = cola;
+        this.listos = cola;
+        this.terminados = new Cola();
         this.auxiliar = new Nodo();
         this.observador = new Lienzo(this);
         
     }
 
-    public Cola getCola() {
-        return cola;
+    public Cola getListos() {
+        return listos;
     }
 
-    public void setCola(Cola cola) {
-        this.cola = cola;
+    public void setListos(Cola listos) {
+        this.listos = listos;
     }
 
     public Nodo getAuxiliar() {
@@ -46,46 +48,49 @@ public class Gestor implements Observable {
     
 
     public void atender() {
-        if (this.cola.numElementos() != 0) {
-            this.auxiliar = this.cola.cabeza;
+        if (this.listos.numElementos() != 0) {
+            this.auxiliar = this.listos.cabeza;
             while (auxiliar.siguiente != null) {
                 if (auxiliar.siguiente.id != -1) {
                     auxiliar = auxiliar.siguiente;
                     if (auxiliar.servicios <= 3) {
                         System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios atendido");
-                        this.cola.eliminarNodo(auxiliar.id);
+                        //this.terminados.agregarNodo(auxiliar);
+                        this.listos.eliminarNodo(auxiliar.id);
+                        
                         notificarObservador();
-                        this.cola.mostrarCola();
+                        this.listos.mostrarCola();
+                        
                     } else {
                         System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios se volvera a la cola");
                         auxiliar.servicios -= 3;
-                        this.cola.eliminarNodo(auxiliar.id);
+                        this.listos.eliminarNodo(auxiliar.id);
                         Nodo copia = new Nodo();
                         copia.id = auxiliar.id;
                         copia.servicios = auxiliar.servicios;
-                        this.cola.agregarNodo(copia);
+                        this.listos.agregarNodo(copia);
                         notificarObservador();
-                        this.cola.mostrarCola();
+                        this.listos.mostrarCola();
 
                     }
                 } else {
-                    if (cola.numElementos() > 0) {
+                    if (listos.numElementos() > 0) {
                         auxiliar = auxiliar.siguiente.siguiente;
                         if (auxiliar.servicios <= 3) {
                             System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios atendido");
-                            this.cola.eliminarNodo(auxiliar.id);
+                            this.listos.eliminarNodo(auxiliar.id);
                             notificarObservador();
-                            this.cola.mostrarCola();
+                            this.listos.mostrarCola();
                         } else {
                             System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios se volvera a la cola");
                             auxiliar.servicios -= 3;
-                            this.cola.eliminarNodo(auxiliar.id);
+                            this.listos.eliminarNodo(auxiliar.id);
                             Nodo copia = new Nodo();
                             copia.id = auxiliar.id;
                             copia.servicios = auxiliar.servicios;
-                            this.cola.agregarNodo(copia);
+                            this.listos.agregarNodo(copia);
                             notificarObservador();
-                            this.cola.mostrarCola();
+                            this.listos.mostrarCola();
 
                         }
                     } else {

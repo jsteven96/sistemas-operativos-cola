@@ -170,7 +170,7 @@ public class InterfazProcesos extends JFrame{
     }
     
     public void eliminarProceso(){
-        if(taIdEliminar.getText()  != ""){
+        if(!"".equals(taIdEliminar.getText())){
             this.miLienzo.eliminarNodo(Integer.parseInt(taIdEliminar.getText()));
         }
     }

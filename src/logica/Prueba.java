@@ -15,7 +15,7 @@ public class Prueba {
     
     public static void main(String [] args) throws Exception{
         
-        /*Nodo nodo1 = new Nodo();
+        Nodo nodo1 = new Nodo();
         
         Nodo nodo2 = new Nodo();
         Cola prueba = new Cola();
@@ -30,8 +30,8 @@ public class Prueba {
         
         Gestor miGestor = new Gestor(prueba);
         miGestor.atender();
-        */
-        InterfazProcesos UI = new InterfazProcesos();
+        
+        //InterfazProcesos UI = new InterfazProcesos();
         
     }
 }
