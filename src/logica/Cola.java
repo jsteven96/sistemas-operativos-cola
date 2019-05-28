@@ -12,6 +12,7 @@ package logica;
 public class Cola {
     public Nodo cabeza;
     Nodo auxiliar;
+    int ultimo;
 
     public Cola() {
         this.cabeza = new Nodo();
@@ -19,6 +20,7 @@ public class Cola {
         this.cabeza.siguiente = this.cabeza;
         this.cabeza.servicios = 0;
         this.auxiliar = new Nodo();
+        this.ultimo = 0;
     }
     
     public void agregarNodo(Nodo nodo){
@@ -32,10 +34,12 @@ public class Cola {
         }
         
         if(nodo.id == -2){
-            nodo.setId(auxiliar.id +1);
+            nodo.setId(this.ultimo);
+            this.ultimo++;
         }
         nodo.siguiente = auxiliar.siguiente;
-        auxiliar.siguiente = nodo;    
+        auxiliar.siguiente = nodo;
+        
     }
     
     public void eliminarNodo(int id){

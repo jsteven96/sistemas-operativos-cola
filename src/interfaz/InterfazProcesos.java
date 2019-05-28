@@ -14,18 +14,12 @@ import logica.Cola;
 import logica.Gestor;
 import logica.Nodo;
 
-
-
-
-
 /**
  *
  * @author root
  */
 public class InterfazProcesos extends JFrame{
     private JPanel panel;
-    private JLabel lblProcesos;
-    private JLabel lblAgregar;
     private JLabel lblEliminar;
     private JTextArea taNumCrear;
     private JTextArea taIdEliminar;
@@ -47,19 +41,19 @@ public class InterfazProcesos extends JFrame{
         //Creación de controles
         panel = new JPanel();
         taNumCrear = new JTextArea(5, 40);
-        taNumCrear.setFont(new Font("Serif", Font.PLAIN, 14));
+        taNumCrear.setFont(new Font("Verdana", Font.PLAIN, 14));
         taNumCrear.setLineWrap(true);
         taNumCrear.setWrapStyleWord(true);
         
         taIdEliminar = new JTextArea(5, 40);
-        taIdEliminar.setFont(new Font("Serif", Font.PLAIN, 14));
+        taIdEliminar.setFont(new Font("Verdana", Font.PLAIN, 14));
         taIdEliminar.setLineWrap(true);
         taIdEliminar.setWrapStyleWord(true);
         
         //Creación de etiquetas
-        lblProcesos = new JLabel("Cola de listos: ");
-        lblAgregar = new JLabel("Agregar procesos ");
-        lblEliminar = new JLabel("Eliminar procesos ");
+        
+        lblEliminar = new JLabel("Id de proceso a eliminar");
+        lblEliminar.setFont(new Font("Verdana", Font.PLAIN, 14));
         
         //Creación de botones
         btnEliminar = new JButton(InterfazProcesos.ELIMINAR_PROCESOS);
@@ -72,21 +66,12 @@ public class InterfazProcesos extends JFrame{
         btnSalir.addActionListener(objControlador);
         btnAtender.addActionListener(objControlador);
         
-        //Creación de gestor
-        this.miCola = new Cola();
-        /*-----
-        Pruebas
-        -----*/
-        Nodo nodoA = new Nodo();
-        Nodo nodoB = new Nodo();
-        Nodo nodoC = new Nodo();
-        Nodo nodoD = new Nodo();
-        this.miCola.agregarNodo(nodoA);
-        this.miCola.agregarNodo(nodoB);
-        this.miCola.agregarNodo(nodoC);
-        this.miCola.agregarNodo(nodoD);
+        btnEliminar.setFont(new Font("Verdana", Font.BOLD, 14));
+        btnAgregar.setFont(new Font("Verdana", Font.BOLD, 14));
+        btnSalir.setFont(new Font("Verdana", Font.BOLD, 14));
+        btnAtender.setFont(new Font("Verdana", Font.BOLD, 14));
         
-        this.miGestor = new Gestor(miCola);
+        inicializar();
         miLienzo = new Lienzo(miGestor);
         miLienzo.setSize(400, 200);
         
@@ -96,8 +81,7 @@ public class InterfazProcesos extends JFrame{
         GridBagLayout gridbag = new GridBagLayout();
         panelBotones.setLayout(gridbag);
         GridBagConstraints gbc = new GridBagConstraints();
-        panelBotones.add(lblProcesos);
-        panelBotones.add(lblAgregar);
+        
         panelBotones.add(lblEliminar);
         
         panelBotones.add(btnAgregar);
@@ -111,53 +95,45 @@ public class InterfazProcesos extends JFrame{
         
         panelBotones.add(btnAtender);
         
-        gbc.insets.top = 5;
-        gbc.insets.bottom = 5;
+        gbc.insets.top = 2;
+        gbc.insets.bottom = 2;
         gbc.insets.left = 5;
         gbc.insets.right = 5;
         
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gridbag.setConstraints(lblProcesos, gbc);
         
         
         
         gbc.gridx = 1;
-        gbc.gridy = 0;
-        gridbag.setConstraints(lblAgregar, gbc);
-        
-        
-        
-        gbc.gridx = 2;
         gbc.gridy = 0;
         gridbag.setConstraints(btnAgregar, gbc);
         
         
-        gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridx = 2;
+        gbc.gridy = 0;
         gridbag.setConstraints(lblEliminar, gbc);
         
         
-        gbc.gridx = 2;
+        gbc.gridx = 1;
         gbc.gridy = 1;
         gridbag.setConstraints(btnEliminar, gbc);
         
-        gbc.gridx = 3;
+        gbc.gridx = 2;
         gbc.gridy = 1;
         gridbag.setConstraints(taIdEliminar, gbc);
         
         
-        gbc.gridx = 2;
-        gbc.gridy = 4;
+        gbc.gridx = 1;
+        gbc.gridy = 3;
         gridbag.setConstraints(btnSalir, gbc);
         
-        gbc.gridx = 2;
-        gbc.gridy = 3;
+        gbc.gridx = 1;
+        gbc.gridy = 2;
         gridbag.setConstraints(btnAtender, gbc);
         
         
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 0;
+        gbc.gridheight = 5;
         gridbag.setConstraints(miLienzo, gbc);
         
         Container contenedor = getContentPane();
@@ -171,9 +147,24 @@ public class InterfazProcesos extends JFrame{
             System.out.println(ex);
         }
         
-        setSize(800, 500);
+        setSize(900, 600);
         setVisible(true);
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    
+    public void inicializar(){
+        this.miCola = new Cola();
+        Nodo nodoA = new Nodo();
+        Nodo nodoB = new Nodo();
+        Nodo nodoC = new Nodo();
+        Nodo nodoD = new Nodo();
+        this.miCola.agregarNodo(nodoA);
+        this.miCola.agregarNodo(nodoB);
+        this.miCola.agregarNodo(nodoC);
+        this.miCola.agregarNodo(nodoD);
+        
+        this.miGestor = new Gestor(miCola);
     }
 
     public void agregarProceso() {
