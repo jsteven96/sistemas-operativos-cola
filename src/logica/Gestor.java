@@ -26,7 +26,7 @@ public class Gestor implements Observable, Runnable {
         this.listos = cola;
         this.terminados = new Cola();
         this.auxiliar = new Nodo();
-        this.retardo = 1000;
+        this.retardo = 2000;
         
     }
 
