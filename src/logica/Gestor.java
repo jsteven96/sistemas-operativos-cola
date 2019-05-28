@@ -20,12 +20,13 @@ public class Gestor implements Observable, Runnable {
     public Cola terminados;
     public Nodo auxiliar;
     public Observador miObservador;
+    public int retardo;
     
     public Gestor(Cola cola) {
         this.listos = cola;
         this.terminados = new Cola();
         this.auxiliar = new Nodo();
-        
+        this.retardo = 1000;
         
     }
 
@@ -65,7 +66,7 @@ public class Gestor implements Observable, Runnable {
                         System.out.println("-----------");
                         this.terminados.mostrarCola();*/
                         try {
-                            Thread.sleep(2000);
+                            Thread.sleep(this.retardo);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -81,7 +82,7 @@ public class Gestor implements Observable, Runnable {
                         notificarObservador();
                         //this.listos.mostrarCola();
                         try {
-                            Thread.sleep(2000);
+                            Thread.sleep(this.retardo);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -91,12 +92,12 @@ public class Gestor implements Observable, Runnable {
                     if (listos.numElementos() > 0) {
                         auxiliar = auxiliar.siguiente.siguiente;
                         if (auxiliar.servicios <= 3) {
-                            System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios atendido");
+                            //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios atendido");
                             this.listos.eliminarNodo(auxiliar.id);
                             notificarObservador();
                             this.listos.mostrarCola();
                             try {
-                            Thread.sleep(2000);
+                            Thread.sleep(this.retardo);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -111,7 +112,7 @@ public class Gestor implements Observable, Runnable {
                             notificarObservador();
                             //this.listos.mostrarCola();
                             try {
-                            Thread.sleep(2000);
+                            Thread.sleep(this.retardo);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
                         }

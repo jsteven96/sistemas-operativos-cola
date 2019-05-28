@@ -73,7 +73,7 @@ public class InterfazProcesos extends JFrame{
         
         inicializar();
         miLienzo = new Lienzo(miGestor);
-        miLienzo.setSize(400, 200);
+        miLienzo.setSize(800, 200);
         
         
         JPanel panelBotones = new JPanel();
@@ -147,7 +147,7 @@ public class InterfazProcesos extends JFrame{
             System.out.println(ex);
         }
         
-        setSize(900, 600);
+        setSize(1200, 600);
         setVisible(true);
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
