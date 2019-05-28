@@ -7,24 +7,29 @@ package logica;
 
 import interfaz.Lienzo;
 import interfaz.Observador;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author root
  */
-public class Gestor implements Observable {
+public class Gestor implements Observable, Runnable {
 
     public Cola listos;
     public Cola terminados;
     public Nodo auxiliar;
-    public Observador observador;
+    public Observador miObservador;
+    
+    //--------
+    int y = 0;
     
 
     public Gestor(Cola cola) {
         this.listos = cola;
         this.terminados = new Cola();
         this.auxiliar = new Nodo();
-        this.observador = new Lienzo(this);
+        
         
     }
 
@@ -55,11 +60,20 @@ public class Gestor implements Observable {
                     auxiliar = auxiliar.siguiente;
                     if (auxiliar.servicios <= 3) {
                         System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios atendido");
-                        //this.terminados.agregarNodo(auxiliar);
+                         Nodo copia = new Nodo();
+                        copia.id = auxiliar.id;
+                        copia.servicios = auxiliar.servicios;
+                        this.terminados.agregarNodo(copia);
                         this.listos.eliminarNodo(auxiliar.id);
-                        
                         notificarObservador();
                         this.listos.mostrarCola();
+                        System.out.println("-----------");
+                        this.terminados.mostrarCola();
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         
                     } else {
                         System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios se volvera a la cola");
@@ -71,6 +85,11 @@ public class Gestor implements Observable {
                         this.listos.agregarNodo(copia);
                         notificarObservador();
                         this.listos.mostrarCola();
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
+                        }
 
                     }
                 } else {
@@ -81,6 +100,11 @@ public class Gestor implements Observable {
                             this.listos.eliminarNodo(auxiliar.id);
                             notificarObservador();
                             this.listos.mostrarCola();
+                            try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         } else {
                             System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios se volvera a la cola");
                             auxiliar.servicios -= 3;
@@ -91,6 +115,11 @@ public class Gestor implements Observable {
                             this.listos.agregarNodo(copia);
                             notificarObservador();
                             this.listos.mostrarCola();
+                            try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
+                        }
 
                         }
                     } else {
@@ -102,12 +131,31 @@ public class Gestor implements Observable {
         }
     }
     
+    public void pruebaNotificacion(){
+        notificarObservador();
+        
+        this.listos.eliminarNodo(y);
+        y += 1;
+    }
+    
     
 
     @Override
     public void notificarObservador() {
-        observador.actualizarDatos(this);
+        miObservador.actualizarDatos(this);
+        System.out.println("Notificando");
         
+        
+    }
+
+    @Override
+    public void registrar(Observador obs) {
+        miObservador = obs;
+    }
+
+    @Override
+    public void run() {
+        atender();
     }
 
 }

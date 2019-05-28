@@ -5,10 +5,13 @@
  */
 package logica;
 
+import interfaz.Observador;
+
 /**
  *
  * @author root
  */
 public interface Observable {
     public void notificarObservador();
+    public void registrar(Observador obs);
 }

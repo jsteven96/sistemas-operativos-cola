@@ -27,15 +27,15 @@ public class Cola {
         while(auxiliar.siguiente.id != -1){
             auxiliar = auxiliar.siguiente;    
         }
-        
+        if(nodo.siguiente != null){
+            nodo.siguiente = null;
+        }
         
         if(nodo.id == -2){
             nodo.setId(auxiliar.id +1);
         }
         nodo.siguiente = auxiliar.siguiente;
-        auxiliar.siguiente = nodo;
-        
-        
+        auxiliar.siguiente = nodo;    
     }
     
     public void eliminarNodo(int id){
