@@ -14,14 +14,22 @@ public class Nodo {
     public int id;
     public Nodo siguiente;
     public int tiempoLlegada;
+    public int tiempoComienzo;
+    public int tiempoRetorno;
+    public int tiempoFinal;
+    public int tiempoEspera;
     
     
     public Nodo(){
-        rafaga = (int) (1 +Math.random() * 7);
-        siguiente = null;
+        this.rafaga = (int) (1 +Math.random() * 7);
+        //this.siguiente = null;
         //El id -2 significa que no tiene id aún
-        id = -2;
+        this.id = -2;
         this.tiempoLlegada = (int) (1 + Math.random() * 5);
+        this.tiempoComienzo = 0;
+        this.tiempoFinal = 0;
+        this.tiempoRetorno = 0;
+        this.tiempoEspera = 0;
     }    
 
     public void setId(int id) {

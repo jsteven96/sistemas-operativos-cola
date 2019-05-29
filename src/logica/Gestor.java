@@ -7,6 +7,7 @@ package logica;
 
 import interfaz.Lienzo;
 import interfaz.Observador;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +21,8 @@ public class Gestor implements Observable, Runnable {
     public Cola terminados;
     public Cola bloqueados;
     public Nodo auxiliar;
-    public Observador miObservador;
+    public ArrayList observadores;
+    //public Observador miObservador;
     public int retardo;
     public int tiempo;
     
@@ -32,6 +34,7 @@ public class Gestor implements Observable, Runnable {
         this.retardo = 2000;
         this.tiempo = 0;
         this.bloqueados = new Cola();
+        this.observadores = new ArrayList();
         
     }
 
@@ -74,7 +77,7 @@ public class Gestor implements Observable, Runnable {
                         copia.rafaga = auxiliar.rafaga;
                         this.terminados.agregarNodo(copia);
                         this.listos.eliminarNodo(auxiliar.id);
-                        notificarObservador();
+                        notificarObservadores();
                         /*this.listos.mostrarCola();
                         System.out.println("-----------");
                         this.terminados.mostrarCola();*/
@@ -92,7 +95,7 @@ public class Gestor implements Observable, Runnable {
                         copia.id = auxiliar.id;
                         copia.rafaga = auxiliar.rafaga;
                         this.listos.agregarNodo(copia);
-                        notificarObservador();
+                        notificarObservadores();
                         //this.listos.mostrarCola();
                         try {
                             Thread.sleep(this.retardo);
@@ -107,7 +110,7 @@ public class Gestor implements Observable, Runnable {
                         if (auxiliar.rafaga <= 3) {
                             //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.rafaga + " rafaga atendido");
                             this.listos.eliminarNodo(auxiliar.id);
-                            notificarObservador();
+                            notificarObservadores();
                             this.listos.mostrarCola();
                             try {
                             Thread.sleep(this.retardo);
@@ -122,7 +125,7 @@ public class Gestor implements Observable, Runnable {
                             copia.id = auxiliar.id;
                             copia.rafaga = auxiliar.rafaga;
                             this.listos.agregarNodo(copia);
-                            notificarObservador();
+                            notificarObservadores();
                             //this.listos.mostrarCola();
                             try {
                             Thread.sleep(this.retardo);
@@ -141,20 +144,23 @@ public class Gestor implements Observable, Runnable {
     }
     
     @Override
-    public void notificarObservador() {
-        miObservador.actualizarDatos(this);
+    public void notificarObservadores() {
+        for(int i = 0; i < this.observadores.size(); i++){
+            Observador observador = (Observador) this.observadores.get(i);
+            observador.actualizarDatos(this);
+        }
+        //miObservador.actualizarDatos(this);
     }
 
     @Override
     public void registrar(Observador obs) {
-        miObservador = obs;
+        //miObservador = obs;
+        this.observadores.add(obs);
     }
 
     @Override
     public void run() {
-        
         atender();
-       
     }
 
 }

@@ -12,6 +12,6 @@ import interfaz.Observador;
  * @author root
  */
 public interface Observable {
-    public void notificarObservador();
+    public void notificarObservadores();
     public void registrar(Observador obs);
 }

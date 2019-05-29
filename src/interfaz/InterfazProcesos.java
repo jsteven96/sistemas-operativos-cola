@@ -35,6 +35,9 @@ public class InterfazProcesos extends JFrame{
     private Lienzo miLienzo;
     private Cola miCola;
     private Gestor miGestor;
+    private Tabla miTabla;
+    private JTable tblGantt;
+    private JScrollPane jScrollPanel;
 
     public InterfazProcesos() throws Exception{
         super("Ejercicio cola de Procesos");
@@ -71,11 +74,21 @@ public class InterfazProcesos extends JFrame{
         btnAgregar.setFont(new Font("Verdana", Font.BOLD, 14));
         btnSalir.setFont(new Font("Verdana", Font.BOLD, 14));
         btnAtender.setFont(new Font("Verdana", Font.BOLD, 14));
-        
         inicializar();
+        //Creación del lienzo
         miLienzo = new Lienzo(miGestor);
         miLienzo.setSize(800, 200);
         
+        
+        //Creación del diagrama de Gantt
+        miTabla = new Tabla(miGestor);
+        this.miTabla.dibujarProcesos();
+        this.jScrollPanel = new JScrollPane();
+        this.jScrollPanel.setBounds(100,75,691,229);
+        this.tblGantt = new JTable();
+        this.tblGantt.setBounds(100,75,691,229);
+        this.tblGantt.setModel(this.miTabla.getModel());
+        this.jScrollPanel.setViewportView(tblGantt);
         
         JPanel panelBotones = new JPanel();
         
@@ -84,25 +97,22 @@ public class InterfazProcesos extends JFrame{
         GridBagConstraints gbc = new GridBagConstraints();
         
         panelBotones.add(lblEliminar);
-        
         panelBotones.add(btnAgregar);
         panelBotones.add(btnEliminar);
-        
         panelBotones.add(btnSalir);
+        panelBotones.add(btnAtender);
         
         panelBotones.add(taIdEliminar);
         
         panelBotones.add(miLienzo);
         
-        panelBotones.add(btnAtender);
+        panelBotones.add(jScrollPanel);
+        
         
         gbc.insets.top = 2;
         gbc.insets.bottom = 2;
         gbc.insets.left = 5;
         gbc.insets.right = 5;
-        
-        
-        
         
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -137,9 +147,13 @@ public class InterfazProcesos extends JFrame{
         gbc.gridheight = 5;
         gridbag.setConstraints(miLienzo, gbc);
         
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gridbag.setConstraints(this.jScrollPanel, gbc);
+        
         Container contenedor = getContentPane();
         contenedor.add(panelBotones, BorderLayout.CENTER);
-        
+        contenedor.add(this.jScrollPanel, BorderLayout.EAST);
         
         try{
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -148,7 +162,7 @@ public class InterfazProcesos extends JFrame{
             System.out.println(ex);
         }
         
-        setSize(1200, 600);
+        setSize(1600, 600);
         setVisible(true);
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -166,19 +180,24 @@ public class InterfazProcesos extends JFrame{
         this.miCola.agregarNodo(nodoD);
         
         this.miGestor = new Gestor(miCola);
+        
     }
 
     public void agregarProceso() {
         this.miLienzo.agregarNodo();
+        this.miTabla.dibujarProcesos();
     }
     
     public void eliminarProceso(){
         if(!"".equals(taIdEliminar.getText())){
             this.miLienzo.eliminarNodo(Integer.parseInt(taIdEliminar.getText()));
+            this.miTabla.dibujarProcesos();
+           
         }
     }
     
     public void atenderProceso(){
         this.miLienzo.atender();
+        
     }
 }

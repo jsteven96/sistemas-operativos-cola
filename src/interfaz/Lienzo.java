@@ -21,7 +21,7 @@ import logica.*;
  */
 public class Lienzo extends Canvas implements Observador{
     
-    public Cola micola;
+    
     public Nodo auxiliar;
     private Gestor objGestor;
     private boolean refrescar;
@@ -30,7 +30,7 @@ public class Lienzo extends Canvas implements Observador{
     
     public Lienzo(Gestor inpObjGestor){
         this.objGestor = inpObjGestor;
-        this.micola = this.objGestor.listos;
+        
         this.auxiliar = this.objGestor.listos.cabeza;
         this.objGestor.registrar(this);
         

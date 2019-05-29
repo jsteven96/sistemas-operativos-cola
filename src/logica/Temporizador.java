@@ -21,7 +21,7 @@ public class Temporizador implements Observable, Runnable {
     }
 
     @Override
-    public void notificarObservador() {
+    public void notificarObservadores() {
         
     }
 
