@@ -10,15 +10,18 @@ package logica;
  * @author root
  */
 public class Nodo {
-    public int servicios;
+    public int rafaga;
     public int id;
     public Nodo siguiente;
+    public int tiempoLlegada;
+    
     
     public Nodo(){
-        servicios = (int) (1 +Math.random() * 7);
+        rafaga = (int) (1 +Math.random() * 7);
         siguiente = null;
         //El id -2 significa que no tiene id aún
         id = -2;
+        this.tiempoLlegada = (int) (1 + Math.random() * 5);
     }    
 
     public void setId(int id) {

@@ -18,15 +18,20 @@ public class Gestor implements Observable, Runnable {
 
     public Cola listos;
     public Cola terminados;
+    public Cola bloqueados;
     public Nodo auxiliar;
     public Observador miObservador;
     public int retardo;
+    public int tiempo;
+    
     
     public Gestor(Cola cola) {
         this.listos = cola;
         this.terminados = new Cola();
         this.auxiliar = new Nodo();
         this.retardo = 2000;
+        this.tiempo = 0;
+        this.bloqueados = new Cola();
         
     }
 
@@ -46,19 +51,27 @@ public class Gestor implements Observable, Runnable {
         this.auxiliar = auxiliar;
     }
     
+    public void calcularTiempo(){
+        while(true){
+            this.tiempo++;
+            System.out.println(this.tiempo);
+        }
+    }
+    
     
 
     public void atender() {
+        
         if (this.listos.numElementos() != 0) {
             this.auxiliar = this.listos.cabeza;
             while (auxiliar.siguiente != null) {
                 if (auxiliar.siguiente.id != -1) {
                     auxiliar = auxiliar.siguiente;
-                    if (auxiliar.servicios <= 3) {
-                        //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios atendido");
+                    if (auxiliar.rafaga <= 3) {
+                        //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.rafaga + " rafaga atendido");
                          Nodo copia = new Nodo();
                         copia.id = auxiliar.id;
-                        copia.servicios = auxiliar.servicios;
+                        copia.rafaga = auxiliar.rafaga;
                         this.terminados.agregarNodo(copia);
                         this.listos.eliminarNodo(auxiliar.id);
                         notificarObservador();
@@ -72,12 +85,12 @@ public class Gestor implements Observable, Runnable {
                         }
                         
                     } else {
-                        //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios se volvera a la cola");
-                        auxiliar.servicios -= 3;
+                        //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.rafaga + " rafaga se volvera a la cola");
+                        auxiliar.rafaga -= 3;
                         this.listos.eliminarNodo(auxiliar.id);
                         Nodo copia = new Nodo();
                         copia.id = auxiliar.id;
-                        copia.servicios = auxiliar.servicios;
+                        copia.rafaga = auxiliar.rafaga;
                         this.listos.agregarNodo(copia);
                         notificarObservador();
                         //this.listos.mostrarCola();
@@ -91,8 +104,8 @@ public class Gestor implements Observable, Runnable {
                 } else {
                     if (listos.numElementos() > 0) {
                         auxiliar = auxiliar.siguiente.siguiente;
-                        if (auxiliar.servicios <= 3) {
-                            //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios atendido");
+                        if (auxiliar.rafaga <= 3) {
+                            //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.rafaga + " rafaga atendido");
                             this.listos.eliminarNodo(auxiliar.id);
                             notificarObservador();
                             this.listos.mostrarCola();
@@ -102,12 +115,12 @@ public class Gestor implements Observable, Runnable {
                             Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         } else {
-                            //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.servicios + " servicios se volvera a la cola");
-                            auxiliar.servicios -= 3;
+                            //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.rafaga + " rafaga se volvera a la cola");
+                            auxiliar.rafaga -= 3;
                             this.listos.eliminarNodo(auxiliar.id);
                             Nodo copia = new Nodo();
                             copia.id = auxiliar.id;
-                            copia.servicios = auxiliar.servicios;
+                            copia.rafaga = auxiliar.rafaga;
                             this.listos.agregarNodo(copia);
                             notificarObservador();
                             //this.listos.mostrarCola();
@@ -139,7 +152,9 @@ public class Gestor implements Observable, Runnable {
 
     @Override
     public void run() {
+        
         atender();
+       
     }
 
 }

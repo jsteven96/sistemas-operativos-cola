@@ -13,6 +13,7 @@ import javax.swing.UIManager;
 import logica.Cola;
 import logica.Gestor;
 import logica.Nodo;
+import logica.Temporizador;
 
 /**
  *

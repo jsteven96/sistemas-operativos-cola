@@ -18,7 +18,7 @@ public class Cola {
         this.cabeza = new Nodo();
         this.cabeza.id = -1;
         this.cabeza.siguiente = this.cabeza;
-        this.cabeza.servicios = 0;
+        this.cabeza.rafaga = 0;
         this.auxiliar = new Nodo();
         this.ultimo = 0;
     }
@@ -61,7 +61,7 @@ public class Cola {
         auxiliar = cabeza;
         while(auxiliar.siguiente.id != -1){
             auxiliar = auxiliar.siguiente;
-            System.out.println(auxiliar.id+" "+auxiliar.servicios);
+            System.out.println(auxiliar.id+" "+auxiliar.rafaga);
         }
     }
     

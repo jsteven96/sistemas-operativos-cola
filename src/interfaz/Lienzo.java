@@ -73,7 +73,7 @@ public class Lienzo extends Canvas implements Observador{
             g.fillRect(x, y, 30, 30);
             g.setColor(Color.DARK_GRAY);
             g.drawString("Id: " + Integer.toString(this.auxiliar.id), x, y + 42);
-            g.drawString("S: " + Integer.toString(this.auxiliar.servicios), x, y + 53);
+            g.drawString("S: " + Integer.toString(this.auxiliar.rafaga), x, y + 53);
             x += 50;
         }
         
@@ -85,7 +85,7 @@ public class Lienzo extends Canvas implements Observador{
             g.fillRect(x1, y1, 30, 30);
             g.setColor(Color.DARK_GRAY);
             g.drawString("Id: " + Integer.toString(this.auxiliar.id), x1, y1 + 42);
-            g.drawString("S: " + Integer.toString(this.auxiliar.servicios), x1, y1 + 53);
+            g.drawString("S: " + Integer.toString(this.auxiliar.rafaga), x1, y1 + 53);
             x1 += 50;
         }
         
@@ -112,11 +112,13 @@ public class Lienzo extends Canvas implements Observador{
     public void eliminarNodo(int indice){
         this.objGestor.listos.eliminarNodo(indice);
         repaint();
+        
     }
     
     public void atender(){
         Thread hilo = new Thread(this.objGestor);
         hilo.start();
+        
     }
     
 }
