@@ -35,4 +35,10 @@ public class Nodo {
     public void setId(int id) {
         this.id = id;
     }
+
+    public void setRafaga(int rafaga) {
+        this.rafaga = rafaga;
+    }
+    
+    
 }

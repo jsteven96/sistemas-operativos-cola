@@ -25,16 +25,18 @@ public class Gestor implements Observable, Runnable {
     //public Observador miObservador;
     public int retardo;
     public int tiempo;
+    public ArrayList procesosProgramados;
     
     
     public Gestor(Cola cola) {
         this.listos = cola;
         this.terminados = new Cola();
         this.auxiliar = new Nodo();
-        this.retardo = 2000;
+        this.retardo = 1000;
         this.tiempo = 0;
         this.bloqueados = new Cola();
         this.observadores = new ArrayList();
+        this.procesosProgramados = new ArrayList();
         
     }
 
@@ -64,32 +66,53 @@ public class Gestor implements Observable, Runnable {
     
 
     public void atender() {
-        
+
         if (this.listos.numElementos() != 0) {
             this.auxiliar = this.listos.cabeza;
             while (auxiliar.siguiente != null) {
                 if (auxiliar.siguiente.id != -1) {
                     auxiliar = auxiliar.siguiente;
                     if (auxiliar.rafaga <= 3) {
-                        //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.rafaga + " rafaga atendido");
-                         Nodo copia = new Nodo();
+                        notificarObservadores();
+                        int lim = this.auxiliar.rafaga;
+                        for (int i = 0; i < lim; i++) {
+                            
+                            this.auxiliar.setRafaga(this.auxiliar.rafaga - 1);
+                            notificarObservadores();
+                            try {
+                                Thread.sleep(this.retardo);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                        }
+                        Nodo copia = new Nodo();
                         copia.id = auxiliar.id;
                         copia.rafaga = auxiliar.rafaga;
                         this.terminados.agregarNodo(copia);
                         this.listos.eliminarNodo(auxiliar.id);
                         notificarObservadores();
+                        
+                        //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.rafaga + " rafaga atendido");
                         /*this.listos.mostrarCola();
                         System.out.println("-----------");
                         this.terminados.mostrarCola();*/
-                        try {
-                            Thread.sleep(this.retardo);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        
+
                     } else {
                         //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.rafaga + " rafaga se volvera a la cola");
-                        auxiliar.rafaga -= 3;
+                        notificarObservadores();
+                        for (int i = 0; i < 3; i++) {
+                            
+                            this.auxiliar.setRafaga(this.auxiliar.rafaga - 1);
+                            notificarObservadores();
+                            try {
+                                Thread.sleep(this.retardo);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                        }
+
                         this.listos.eliminarNodo(auxiliar.id);
                         Nodo copia = new Nodo();
                         copia.id = auxiliar.id;
@@ -97,29 +120,45 @@ public class Gestor implements Observable, Runnable {
                         this.listos.agregarNodo(copia);
                         notificarObservadores();
                         //this.listos.mostrarCola();
-                        try {
-                            Thread.sleep(this.retardo);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+
 
                     }
                 } else {
                     if (listos.numElementos() > 0) {
+                        notificarObservadores();
                         auxiliar = auxiliar.siguiente.siguiente;
                         if (auxiliar.rafaga <= 3) {
+                            int lim = auxiliar.rafaga;
+                            for (int i = 0; i < lim; i++) {
+                                try {
+                                    Thread.sleep(this.retardo);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                auxiliar.setRafaga(auxiliar.rafaga - 1);
+                                notificarObservadores();
+
+                            }
                             //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.rafaga + " rafaga atendido");
                             this.listos.eliminarNodo(auxiliar.id);
                             notificarObservadores();
                             this.listos.mostrarCola();
-                            try {
-                            Thread.sleep(this.retardo);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                            
+
                         } else {
                             //System.out.println("Nodo " + auxiliar.id + " con " + auxiliar.rafaga + " rafaga se volvera a la cola");
-                            auxiliar.rafaga -= 3;
+                            notificarObservadores();
+                            for (int i = 0; i < 3; i++) {
+                                try {
+                                    Thread.sleep(this.retardo);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                auxiliar.setRafaga(auxiliar.rafaga - 1);
+                                notificarObservadores();
+
+                            }
+
                             this.listos.eliminarNodo(auxiliar.id);
                             Nodo copia = new Nodo();
                             copia.id = auxiliar.id;
@@ -127,14 +166,11 @@ public class Gestor implements Observable, Runnable {
                             this.listos.agregarNodo(copia);
                             notificarObservadores();
                             //this.listos.mostrarCola();
-                            try {
-                            Thread.sleep(this.retardo);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                            
 
                         }
                     } else {
+                        notificarObservadores();
                         break;
                     }
                 }

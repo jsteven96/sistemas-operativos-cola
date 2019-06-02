@@ -20,13 +20,9 @@ import logica.*;
  * @author root
  */
 public class Lienzo extends Canvas implements Observador{
-    
-    
     public Nodo auxiliar;
     private Gestor objGestor;
     private boolean refrescar;
-    
-    
     
     public Lienzo(Gestor inpObjGestor){
         this.objGestor = inpObjGestor;
@@ -34,14 +30,13 @@ public class Lienzo extends Canvas implements Observador{
         this.auxiliar = this.objGestor.listos.cabeza;
         this.objGestor.registrar(this);
         
+        
     }
     
     @Override
     public void paint(Graphics g){
         limpiar();
-        
         dibujarProcesos(g);
-        
     }
     
      public void limpiar(){
@@ -69,7 +64,7 @@ public class Lienzo extends Canvas implements Observador{
         while (this.auxiliar.siguiente.id != -1) {
             int i= this.auxiliar.siguiente.id;
             this.auxiliar = this.auxiliar.siguiente;
-            g.setColor(new Color(i*102%255, i*75%255, i*32%255));
+            g.setColor(new Color(i * 102 % 255, i * 75 % 255, i * 32 % 255));
             g.fillRect(x, y, 30, 30);
             g.setColor(Color.DARK_GRAY);
             g.drawString("Id: " + Integer.toString(this.auxiliar.id), x, y + 42);

@@ -30,7 +30,7 @@ public class Tabla implements Observador {
         this.model = new DefaultTableModel();
         this.objGestor = inpObjGestor;
         this.objGestor.registrar(this);
-        String[] titulo = new String[]{"Id", "Rafaga", "Tiempo"};
+        String[] titulo = new String[]{"Id", "T. Llegada","Rafaga","T. Comienzo", "T. Final", "T. Retorno", "T. Espera"};
         this.model.setColumnIdentifiers(titulo);
         
     }
@@ -52,8 +52,12 @@ public class Tabla implements Observador {
             this.auxiliar = this.auxiliar.siguiente;
             Vector fila = new Vector();
             fila.add(this.auxiliar.id);
-            fila.add(this.auxiliar.rafaga);
             fila.add(this.auxiliar.tiempoLlegada);
+            fila.add(this.auxiliar.rafaga);
+            fila.add(this.auxiliar.tiempoComienzo);
+            fila.add(this.auxiliar.tiempoFinal);
+            fila.add(this.auxiliar.tiempoRetorno);
+            fila.add(this.auxiliar.tiempoEspera);
             this.model.addRow(fila);
             
         }
