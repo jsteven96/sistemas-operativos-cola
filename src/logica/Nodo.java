@@ -21,11 +21,11 @@ public class Nodo {
     
     
     public Nodo(){
-        this.rafaga = (int) (1 +Math.random() * 7);
+        this.rafaga = (int) (1 + Math.random() * 7);
         //this.siguiente = null;
         //El id -2 significa que no tiene id aún
         this.id = -2;
-        this.tiempoLlegada = (int) (1 + Math.random() * 5);
+        this.tiempoLlegada = (int) (Math.random() * 4);
         this.tiempoComienzo = 0;
         this.tiempoFinal = 0;
         this.tiempoRetorno = 0;
@@ -36,8 +36,60 @@ public class Nodo {
         this.id = id;
     }
 
-    public void setRafaga(int rafaga) {
+    public synchronized void setRafaga(int rafaga) {
         this.rafaga = rafaga;
+    }
+
+    public synchronized int getTiempoLlegada() {
+        return tiempoLlegada;
+    }
+
+    public synchronized void setTiempoLlegada(int tiempoLlegada) {
+        this.tiempoLlegada = tiempoLlegada;
+    }
+
+    public synchronized int getRafaga() {
+        return rafaga;
+    }
+
+    public synchronized int getId() {
+        return id;
+    }
+
+    public Nodo getSiguiente() {
+        return siguiente;
+    }
+
+    public synchronized int getTiempoComienzo() {
+        return tiempoComienzo;
+    }
+
+    public synchronized int getTiempoRetorno() {
+        return tiempoRetorno;
+    }
+
+    public synchronized int getTiempoFinal() {
+        return tiempoFinal;
+    }
+
+    public synchronized int getTiempoEspera() {
+        return tiempoEspera;
+    }
+
+    public synchronized void setTiempoComienzo(int tiempoComienzo) {
+        this.tiempoComienzo = tiempoComienzo;
+    }
+
+    public void setTiempoRetorno(int tiempoRetorno) {
+        this.tiempoRetorno = tiempoRetorno;
+    }
+
+    public void setTiempoFinal(int tiempoFinal) {
+        this.tiempoFinal = tiempoFinal;
+    }
+
+    public void setTiempoEspera(int tiempoEspera) {
+        this.tiempoEspera = tiempoEspera;
     }
     
     

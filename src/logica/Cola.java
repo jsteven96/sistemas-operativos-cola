@@ -29,9 +29,6 @@ public class Cola {
         while(auxiliar.siguiente.id != -1){
             auxiliar = auxiliar.siguiente;    
         }
-        if(nodo.siguiente != null){
-            nodo.siguiente = null;
-        }
         
         if(nodo.id == -2){
             nodo.setId(this.ultimo);
@@ -61,7 +58,7 @@ public class Cola {
         auxiliar = cabeza;
         while(auxiliar.siguiente.id != -1){
             auxiliar = auxiliar.siguiente;
-            System.out.println(auxiliar.id+" "+auxiliar.rafaga);
+            System.out.println("ID "+auxiliar.id+" TL "+auxiliar.tiempoLlegada+" R "+auxiliar.rafaga+" TC "+auxiliar.tiempoComienzo+" TF "+auxiliar.tiempoFinal);
         }
     }
     

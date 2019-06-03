@@ -28,6 +28,8 @@ public class Diagrama extends JFrame implements Observador {
     private DefaultTableModel dtm;
     private Nodo auxiliar;
     private JScrollPane jspDiagrama;
+    //private GestorCeldas gesCeldas;
+    public int veces = 0;
     
     public Diagrama(Gestor inpObjGestor){
         super("Diagrama de Gantt");
@@ -39,12 +41,10 @@ public class Diagrama extends JFrame implements Observador {
         //Creación de JScrollPane
         this.jspDiagrama = new JScrollPane();
         
-        
-        
         //Asignación del objeto gestor observable
         this.objGestor = inpObjGestor;
         this.objGestor.registrar(this);
-        this.auxiliar = this.objGestor.listos.cabeza;
+        this.auxiliar = this.objGestor.getListos().cabeza;
         
         //Creación de la tabla
         this.tblProcesos = new JTable();
@@ -61,6 +61,8 @@ public class Diagrama extends JFrame implements Observador {
         Container content = getContentPane();
         content.add(this.pnlDiagrama);
         
+        String[] titulo = new String[]{"Id"};
+        this.dtm.setColumnIdentifiers(titulo);
         
         try{
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -68,8 +70,6 @@ public class Diagrama extends JFrame implements Observador {
         }catch(Exception ex){
             System.out.println(ex);
         }
-        
-        
         setVisible(true);
         pack();
         
@@ -77,53 +77,36 @@ public class Diagrama extends JFrame implements Observador {
         
     }
 
-    @Override
-    public void actualizarDatos(Observable sujeto) {
-        if(sujeto.equals(this.objGestor)){
-            this.auxiliar = this.objGestor.listos.cabeza;
-            dibujarProcesos();
-        }
-    }
+    
     
     public void dibujarProcesos(){
-        eliminarProcesos();
-        this.auxiliar = this.objGestor.listos.cabeza;
+        contarUltimo();
+        
+        
+    }
+    
+    public void contarUltimo(){
+        /*int ult = 0;
+        this.auxiliar = this.objGestor.getTerminados().cabeza;
         while(this.auxiliar.siguiente.id != -1){
             this.auxiliar = this.auxiliar.siguiente;
-            Vector info = new Vector();
-            info.add(this.auxiliar.id);
-            this.dtm.addRow(info);
-        }
+            this.dtm.addColumn();
+        }*/
+        
     }
     
     public void eliminarProcesos(){
-        this.dtm.setRowCount(0);
-        eliminarCabeceras();
-        dibujarCabeceras();
+        this.dtm.setRowCount(1);
     }
     
-    public void dibujarCabeceras(){
-        this.auxiliar = this.objGestor.listos.cabeza;
-        int col = 0;
-        Vector ids = new Vector();
-        ids.add(new String("Id"));
-        while(this.auxiliar.siguiente.id != -1){
-            this.auxiliar = this.auxiliar.siguiente;
-            col += this.auxiliar.rafaga;
-            
-        }
-        for(int i = 0; i < col; i++){
-            ids.add(i);
-        }
-        this.dtm.setColumnIdentifiers(ids);
-        TableColumnModel aux = this.tblProcesos.getColumnModel();
-        for(int i = 0; i < this.dtm.getColumnCount(); i++){
-            aux.getColumn(i).setPreferredWidth(20);
+    @Override
+    public void actualizarDatos(Observable sujeto) {
+        if(this.objGestor.equals(sujeto)){
+            this.auxiliar = this.objGestor.getTerminados().cabeza;
+            dibujarProcesos();
+            System.out.println("Actualizando datos");
         }
     }
     
-    public void eliminarCabeceras(){
-        this.dtm.setColumnCount(0);
-    }
     
 }

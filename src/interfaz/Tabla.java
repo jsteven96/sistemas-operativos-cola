@@ -47,7 +47,7 @@ public class Tabla implements Observador {
     
     public void dibujarProcesos(){
         eliminarProcesos();
-        this.auxiliar = this.objGestor.listos.cabeza;
+        this.auxiliar = this.objGestor.getTerminados().cabeza;
         while(this.auxiliar.siguiente.id != -1){
             this.auxiliar = this.auxiliar.siguiente;
             Vector fila = new Vector();
@@ -59,7 +59,6 @@ public class Tabla implements Observador {
             fila.add(this.auxiliar.tiempoRetorno);
             fila.add(this.auxiliar.tiempoEspera);
             this.model.addRow(fila);
-            
         }
         
     }
@@ -72,7 +71,7 @@ public class Tabla implements Observador {
     @Override
     public void actualizarDatos(Observable sujeto) {
         if(this.objGestor.equals(sujeto)){
-            this.auxiliar = this.objGestor.listos.cabeza;
+            this.auxiliar = this.objGestor.getTerminados().cabeza;
             dibujarProcesos();
         }
     }

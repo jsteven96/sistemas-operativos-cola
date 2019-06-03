@@ -14,23 +14,19 @@ import interfaz.InterfazProcesos;
 public class Prueba {
     
     public static void main(String [] args) throws Exception{
-        /*
-        Nodo nodo1 = new Nodo();
         
-        Nodo nodo2 = new Nodo();
-        Cola prueba = new Cola();
-        prueba.agregarNodo(nodo1);
-        prueba.agregarNodo(nodo2);
-        Nodo nodo3 = new Nodo();
-        prueba.agregarNodo(nodo3);
-        Nodo nodo4 = new Nodo();
-        prueba.agregarNodo(nodo4);
-        prueba.mostrarCola();
-        
-        
+        /*Cola prueba = new Cola();
         Gestor miGestor = new Gestor(prueba);
+        miGestor.agregarNodo();
+        miGestor.agregarNodo();
+        miGestor.agregarNodo();
+        System.out.println("Listos");
+        miGestor.listos.mostrarCola();
+        miGestor.ordenarNodosProgramados();
+        System.out.println("Ordenados");
+        miGestor.mostrarNodosProgramados();
+        System.out.println("Atendidos");
         miGestor.atender();*/
-        
         InterfazProcesos UI = new InterfazProcesos();
         
     }

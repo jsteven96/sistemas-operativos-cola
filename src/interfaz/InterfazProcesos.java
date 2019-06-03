@@ -41,6 +41,7 @@ public class InterfazProcesos extends JFrame{
     private JTable tblGantt;
     private JScrollPane jScrollPanel;
     private Diagrama miDiagrama;
+    private DiagramaPanel miDiagramaPanel;
 
     public InterfazProcesos() throws Exception{
         super("Ejercicio cola de Procesos");
@@ -81,6 +82,7 @@ public class InterfazProcesos extends JFrame{
         btnAtender.setFont(new Font("Verdana", Font.BOLD, 14));
         inicializar();
         //Creación del lienzo
+        
         miLienzo = new Lienzo(miGestor);
         miLienzo.setSize(400, 200);
         
@@ -92,9 +94,9 @@ public class InterfazProcesos extends JFrame{
         this.tblGantt.setModel(this.miTabla.getModel());
         this.jScrollPanel.setViewportView(tblGantt);
         
-        this.miDiagrama = new Diagrama(this.miGestor);
-        this.miDiagrama.dibujarProcesos();
-        this.miDiagrama.dibujarCabeceras();
+        //miDiagrama = new Diagrama(miGestor);
+        this.miDiagramaPanel = new DiagramaPanel(miGestor);
+        
         
         //Distribución de cada elemento en un panel particular
         this.pnlBotones.setLayout(new BoxLayout(this.pnlBotones, BoxLayout.Y_AXIS));
@@ -135,35 +137,31 @@ public class InterfazProcesos extends JFrame{
     
     public void inicializar(){
         this.miCola = new Cola();
-        Nodo nodoA = new Nodo();
-        Nodo nodoB = new Nodo();
-        Nodo nodoC = new Nodo();
-        Nodo nodoD = new Nodo();
-        this.miCola.agregarNodo(nodoA);
-        this.miCola.agregarNodo(nodoB);
-        this.miCola.agregarNodo(nodoC);
-        this.miCola.agregarNodo(nodoD);
-        
         this.miGestor = new Gestor(miCola);
+        this.miGestor.agregarNodo();
+        this.miGestor.agregarNodo();
+        this.miGestor.agregarNodo();
         
     }
 
     public void agregarProceso() {
         this.miLienzo.agregarNodo();
         this.miTabla.dibujarProcesos();
-        this.miDiagrama.dibujarProcesos();
+        //this.miDiagrama.dibujarProcesos();
     }
     
     public void eliminarProceso(){
         if(!"".equals(taIdEliminar.getText())){
             this.miLienzo.eliminarNodo(Integer.parseInt(taIdEliminar.getText()));
             this.miTabla.dibujarProcesos();
+            //this.miDiagrama.dibujarProcesos();
            
         }
     }
     
     public void atenderProceso(){
         this.miLienzo.atender();
+        this.btnAtender.setEnabled(false);
         
     }
 }
