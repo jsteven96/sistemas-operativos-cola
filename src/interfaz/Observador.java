@@ -13,5 +13,4 @@ import logica.Observable;
  */
 public interface Observador {
     public void actualizarDatos(Observable sujeto);
-    
 }

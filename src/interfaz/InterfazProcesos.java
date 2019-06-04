@@ -13,7 +13,6 @@ import javax.swing.UIManager;
 import logica.Cola;
 import logica.Gestor;
 import logica.Nodo;
-import logica.Temporizador;
 
 /**
  *
@@ -40,7 +39,6 @@ public class InterfazProcesos extends JFrame{
     private Tabla miTabla;
     private JTable tblGantt;
     private JScrollPane jScrollPanel;
-    private Diagrama miDiagrama;
     private DiagramaPanel miDiagramaPanel;
 
     public InterfazProcesos() throws Exception{
