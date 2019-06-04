@@ -28,10 +28,12 @@ public class InterfazProcesos extends JFrame{
     private JButton btnEliminar;
     private JButton btnAgregar;
     private JButton btnAtender;
+    private JButton btnBloquear;
     private JButton btnSalir;
     public static final String AGREGAR_PROCESOS = "Agregar procesos";
     public static final String ELIMINAR_PROCESOS = "Eliminar procesos";
     public static final String ATENDER_PROCESOS = "Atender procesos";
+    public static final String BLOQUEAR_PROCESO = "Bloquear procesos";
     public static final String SALIR = "Salir";
     private Lienzo miLienzo;
     private Cola miCola;
@@ -55,9 +57,7 @@ public class InterfazProcesos extends JFrame{
         
         taIdEliminar = new JTextArea(5, 5);
         taIdEliminar.setFont(new Font("Verdana", Font.PLAIN, 14));
-        //taIdEliminar.setLineWrap(true);
-        //taIdEliminar.setWrapStyleWord(true);
-        
+                
         //Creación de etiquetas
         
         lblEliminar = new JLabel("Id de proceso a eliminar");
@@ -67,17 +67,20 @@ public class InterfazProcesos extends JFrame{
         btnEliminar = new JButton(InterfazProcesos.ELIMINAR_PROCESOS);
         btnAgregar = new JButton(InterfazProcesos.AGREGAR_PROCESOS);
         btnAtender = new JButton(InterfazProcesos.ATENDER_PROCESOS);
+        btnBloquear = new JButton(InterfazProcesos.BLOQUEAR_PROCESO);
         btnSalir = new JButton(InterfazProcesos.SALIR);
         Controlador objControlador = new Controlador(this);
         btnEliminar.addActionListener(objControlador);
         btnAgregar.addActionListener(objControlador);
         btnSalir.addActionListener(objControlador);
         btnAtender.addActionListener(objControlador);
+        btnBloquear.addActionListener(objControlador);
         
         btnEliminar.setFont(new Font("Verdana", Font.BOLD, 14));
         btnAgregar.setFont(new Font("Verdana", Font.BOLD, 14));
         btnSalir.setFont(new Font("Verdana", Font.BOLD, 14));
         btnAtender.setFont(new Font("Verdana", Font.BOLD, 14));
+        btnBloquear.setFont(new Font("Verdana", Font.BOLD, 14));
         inicializar();
         //Creación del lienzo
         
@@ -105,6 +108,7 @@ public class InterfazProcesos extends JFrame{
         
         this.pnlBotones.add(this.btnEliminar);
         this.pnlBotones.add(this.btnAtender);
+        this.pnlBotones.add(this.btnBloquear);
         this.pnlBotones.add(this.btnSalir);
         
         
@@ -161,5 +165,9 @@ public class InterfazProcesos extends JFrame{
         this.miLienzo.atender();
         this.btnAtender.setEnabled(false);
         
+    }
+    
+    public void bloquearProceso(){
+        this.miLienzo.bloquearProceso();
     }
 }

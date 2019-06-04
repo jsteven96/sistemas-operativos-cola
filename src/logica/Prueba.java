@@ -21,7 +21,7 @@ public class Prueba {
         miGestor.agregarNodo();
         miGestor.agregarNodo();
         System.out.println("Listos");
-        miGestor.listos.mostrarCola();
+        miGestor.getListos().mostrarCola();
         miGestor.ordenarNodosProgramados();
         System.out.println("Ordenados");
         miGestor.mostrarNodosProgramados();

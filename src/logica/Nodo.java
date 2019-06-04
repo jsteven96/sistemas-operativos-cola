@@ -18,6 +18,8 @@ public class Nodo {
     public int tiempoRetorno;
     public int tiempoFinal;
     public int tiempoEspera;
+    public int prioridad;
+    public boolean bloqueado;
     
     
     public Nodo(){
@@ -26,14 +28,20 @@ public class Nodo {
         //El id -2 significa que no tiene id aún
         this.id = -2;
         this.tiempoLlegada = (int) (Math.random() * 4);
+        this.prioridad = (int) (1 + Math.random() * 4);
         this.tiempoComienzo = 0;
         this.tiempoFinal = 0;
         this.tiempoRetorno = 0;
         this.tiempoEspera = 0;
+        this.bloqueado = false;
     }    
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getPrioridad() {
+        return prioridad;
     }
 
     public synchronized void setRafaga(int rafaga) {

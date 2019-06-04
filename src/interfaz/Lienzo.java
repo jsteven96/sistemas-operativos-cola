@@ -56,7 +56,7 @@ public class Lienzo extends Canvas implements Observador{
         g.drawRect(x, y, 30, 30);
         g.drawString("Id: "+Integer.toString(this.objGestor.getListos().cabeza.id), x, y+42);
         x +=50;
-        g.drawString("Nodos programados", 3, 95);
+        g.drawString("Nodos bloqueados", 3, 95);
         g.setColor(Color.WHITE);
         g.fillRect(3, 160, 100, 20);
         g.setColor(Color.DARK_GRAY);
@@ -77,7 +77,21 @@ public class Lienzo extends Canvas implements Observador{
             x += 40;
         }
         
-        for(int i = 0; i < this.objGestor.procesosProgramados.size(); i++){
+        
+        this.auxiliar = this.objGestor.getBloqueados().cabeza;
+        
+        while(this.auxiliar.siguiente.id != -1){
+            this.auxiliar = this.auxiliar.siguiente;
+            int i= this.auxiliar.siguiente.id;
+            g.setColor(new Color(i*102%255, i*75%255, i*32%255));
+            g.fillRect(x1, y1, 30, 30);
+            g.setColor(Color.DARK_GRAY);
+            g.drawString("Id: " + Integer.toString(this.auxiliar.id), x1, y1 + 42);
+            g.drawString("S: " + Integer.toString(this.auxiliar.rafaga), x1, y1 + 53);
+            x1 += 50;
+        }
+        
+        /*for(int i = 0; i < this.objGestor.procesosProgramados.size(); i++){
             g.setColor(Color.LIGHT_GRAY);
             g.fillRect(x1, y1, 30, 30);
             g.setColor(Color.DARK_GRAY);
@@ -86,7 +100,7 @@ public class Lienzo extends Canvas implements Observador{
             g.drawString("Id " + Integer.toString(a.id), x1, y1 + 42);
             g.drawString("TL " + Integer.toString(a.tiempoLlegada), x1, y1 + 53);
             x1 += 50;
-        }
+        }*/
         /*
         this.auxiliar = this.objGestor.terminados.cabeza;
         while (this.auxiliar.siguiente.id != -1) {
@@ -121,6 +135,10 @@ public class Lienzo extends Canvas implements Observador{
     public void eliminarNodo(int indice){
         this.objGestor.eliminarNodo(indice);
         
+    }
+    
+    public void bloquearProceso(){
+        this.objGestor.bloquearProceso();
     }
     
     public void atender(){

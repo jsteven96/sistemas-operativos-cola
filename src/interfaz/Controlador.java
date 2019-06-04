@@ -37,6 +37,9 @@ public class Controlador implements ActionListener {
         if(e.getActionCommand().equals(InterfazProcesos.ATENDER_PROCESOS)){
             objInterfaz.atenderProceso();
         }
+        if(e.getActionCommand().equals(InterfazProcesos.BLOQUEAR_PROCESO)){
+            objInterfaz.bloquearProceso();
+        }
     }
     
 }
