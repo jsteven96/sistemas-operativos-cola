@@ -32,7 +32,7 @@ public class Gestor implements Observable, Runnable {
         this.listos = cola;
         this.terminados = new Cola();
         this.auxiliar = new Nodo();
-        this.retardo = 500;
+        this.retardo = 1000;
         this.tiempo = 0;
         this.bloqueados = new Cola();
         this.observadores = new ArrayList();

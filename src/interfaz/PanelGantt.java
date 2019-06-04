@@ -29,32 +29,61 @@ public class PanelGantt extends JPanel implements Observador {
         this.auxiliar = this.objGestor.getTerminados().cabeza;
         setBackground(Color.WHITE);
         this.objGestor.registrar(this);
-        setPreferredSize(new Dimension(1000, 1000));
+        setPreferredSize(new Dimension(4000, 500));
     }
     
     public void dibujarProcesos(Graphics g){
         limpiar(g);
-        int ancho = 0;
-        int x = 5, y = 20;
-        int x1 = 5, y1 = 105;
-        g.setFont(new Font("Verdana", Font.PLAIN, 10));
-        this.auxiliar = this.objGestor.getTerminados().cabeza;
         
-        while (this.auxiliar.siguiente.id != -1) {
+        int x = 40, y = 40;
+        int cont = 0;
+        int col = 0;
+        g.setFont(new Font("Verdana", Font.PLAIN, 13));
+        this.auxiliar = this.objGestor.getTerminados().cabeza;
+        while(this.auxiliar.siguiente.id != -1){
             this.auxiliar = this.auxiliar.siguiente;
-            int i= this.auxiliar.id;
-            ancho = ancho + this.auxiliar.rafaga;
-            g.setColor(new Color(i * 102 % 255, i * 75 % 255, i * 32 % 255));
-            g.fillRect(x, y, 20, 20);
-            g.setColor(Color.DARK_GRAY);
-            g.drawString("Id " + Integer.toString(this.auxiliar.id), x, y + 42);
-            g.drawString("TL " + Integer.toString(this.auxiliar.tiempoLlegada), x, y + 53);
-            g.drawString("R " + Integer.toString(this.auxiliar.rafaga), x, y + 64);
-            x += 40;
             
+        }
+        col = col + this.auxiliar.tiempoFinal;
+        /*
+        Dimension d = getSize();
+        int ancho = d.width + (col*21);
+        setPreferredSize(new Dimension(ancho, d.height));
+        */
+        for(int i = 0; i <= col; i++){
+            g.setColor(Color.LIGHT_GRAY);
+            g.drawRect((i*21)+x, 0, 20, 20);
+            g.setColor(Color.BLACK);
+            g.drawString(" "+Integer.toString(i), (i*21)+x, 11);
         }
         
         
+        
+        this.auxiliar = this.objGestor.getTerminados().cabeza;
+        while(this.auxiliar.siguiente.id != -1){
+            cont = 0;
+            col = 0;
+            this.auxiliar = this.auxiliar.siguiente;
+            g.setColor(Color.BLACK);
+            g.drawString(Integer.toString(this.auxiliar.id), 0, y+13);
+            for(int i = this.auxiliar.tiempoLlegada; i < this.auxiliar.getTiempoFinal(); i++){
+                if(i < this.auxiliar.tiempoComienzo){
+                    g.setColor(Color.BLACK);
+                    g.setColor(Color.LIGHT_GRAY);
+                    g.fillRect(21*i+x, y, 20, 20);
+                    cont++;  
+                }else{
+                    g.setColor(Color.BLACK);
+                    //g.drawString(Integer.toString(col), 21*i+x, 10);
+                    int s= this.auxiliar.id;
+                    g.setColor(new Color(s * 102 % 255, s * 75 % 255, s * 32 % 255));
+                    g.fillRect(21*i+x, y, 20, 20);
+                    cont++; 
+                }
+            }
+            
+            y += 24;
+        }
     }
     
     public void limpiar(Graphics g){
