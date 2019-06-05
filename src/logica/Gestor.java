@@ -9,6 +9,7 @@ import interfaz.Observador;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  *
  * @author root
@@ -25,7 +26,7 @@ public class Gestor implements Observable, Runnable {
     private int tiempo;
     public ArrayList procesosProgramados;
     public int pp;
-    
+
     public Gestor(Cola cola) {
         this.listos = cola;
         this.terminados = new Cola();
@@ -36,7 +37,7 @@ public class Gestor implements Observable, Runnable {
         this.observadores = new ArrayList();
         this.procesosProgramados = new ArrayList();
         this.pp = 100;
-        
+
     }
 
     public synchronized Cola getListos() {
@@ -63,7 +64,7 @@ public class Gestor implements Observable, Runnable {
         this.terminados = terminados;
     }
 
-    public  synchronized  int getTiempo() {
+    public synchronized int getTiempo() {
         return tiempo;
     }
 
@@ -78,28 +79,26 @@ public class Gestor implements Observable, Runnable {
     public void setBloqueados(Cola bloqueados) {
         this.bloqueados = bloqueados;
     }
-    
-    
-    
-    public void bloquearProceso(){
+
+    public void bloquearProceso() {
         this.auxiliar.bloqueado = true;
     }
-    
+
     public void atender() {
-        while(true){
+        while (true) {
             this.auxiliar = this.getListos().cabeza;
-            if(this.listos.numElementos() == 0){
+            if (this.listos.numElementos() == 0) {
                 incrementarTiempo();
                 encolarProgramados();
                 this.listos.mostrarCola();
                 notificarObservadores();
-                 try {
+                try {
                     Thread.sleep(this.retardo);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
+
             while (this.auxiliar.siguiente.id != -1) {
                 this.auxiliar = this.auxiliar.siguiente;
                 if (this.auxiliar.bloqueado == true) {
@@ -111,84 +110,84 @@ public class Gestor implements Observable, Runnable {
                     copia.setTiempoFinal(this.getTiempo() + this.auxiliar.getRafaga());
                     copia.setTiempoRetorno(copia.getTiempoFinal() - copia.getTiempoLlegada());
                     copia.setTiempoEspera(copia.getTiempoRetorno() - copia.getRafaga());
+                    this.listos.eliminarNodo(this.auxiliar.id);
                     this.bloqueados.agregarNodo(copia);
-                    this.listos.eliminarNodo(this.auxiliar.id);
                     notificarObservadores();
-                }else{
+                } else {
                     Nodo copia = new Nodo();
-                copia.setId(this.getAuxiliar().id);
-                copia.setRafaga(this.getAuxiliar().getRafaga());
-                copia.setTiempoComienzo(this.getTiempo());
-                copia.setTiempoLlegada(this.auxiliar.getTiempoLlegada());
-                copia.setTiempoFinal(this.getTiempo() + this.auxiliar.getRafaga());
-                copia.setTiempoRetorno(copia.getTiempoFinal() - copia.getTiempoLlegada());
-                copia.setTiempoEspera(copia.getTiempoRetorno() - copia.getRafaga());
-                for (int i = 0; i < copia.getRafaga(); i++) {
-                    if (this.auxiliar.bloqueado == true) {
-                    Nodo copia2 = new Nodo();
-                    copia2.setId(this.getAuxiliar().id);
-                    copia2.setRafaga(this.getAuxiliar().getRafaga());
-                    copia2.setTiempoComienzo(this.getTiempo());
-                    copia2.setTiempoLlegada(this.auxiliar.getTiempoLlegada());
-                    copia2.setTiempoFinal(this.getTiempo() + this.auxiliar.getRafaga());
-                    copia2.setTiempoRetorno(copia2.getTiempoFinal() - copia2.getTiempoLlegada());
-                    copia2.setTiempoEspera(copia2.getTiempoRetorno() - copia2.getRafaga());
-                    this.bloqueados.agregarNodo(copia2);
-                    this.listos.eliminarNodo(this.auxiliar.id);
-                    notificarObservadores();
-                }
-                    this.auxiliar.setRafaga(this.auxiliar.getRafaga() - 1);
-                    incrementarTiempo();
-                    encolarProgramados();
-                    notificarObservadores();
-                    try {
-                        Thread.sleep(this.retardo);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
+                    copia.setId(this.getAuxiliar().id);
+                    copia.setRafaga(this.getAuxiliar().getRafaga());
+                    copia.setTiempoComienzo(this.getTiempo());
+                    copia.setTiempoLlegada(this.auxiliar.getTiempoLlegada());
+                    copia.setTiempoFinal(this.getTiempo() + this.auxiliar.getRafaga());
+                    copia.setTiempoRetorno(copia.getTiempoFinal() - copia.getTiempoLlegada());
+                    copia.setTiempoEspera(copia.getTiempoRetorno() - copia.getRafaga());
+                    for (int i = 0; i < copia.getRafaga(); i++) {
+                        if (this.auxiliar.bloqueado == true) {
+                            Nodo copia2 = new Nodo();
+                            copia2.setId(this.getAuxiliar().id);
+                            copia2.setRafaga(this.getAuxiliar().getRafaga());
+                            copia2.setTiempoComienzo(this.getTiempo());
+                            copia2.setTiempoLlegada(this.auxiliar.getTiempoLlegada());
+                            copia2.setTiempoFinal(this.getTiempo() + this.auxiliar.getRafaga());
+                            copia2.setTiempoRetorno(copia2.getTiempoFinal() - copia2.getTiempoLlegada());
+                            copia2.setTiempoEspera(copia2.getTiempoRetorno() - copia2.getRafaga());
+                            this.listos.eliminarNodo(this.auxiliar.id);
+                            this.bloqueados.agregarNodo(copia2);
+                            notificarObservadores();
+                            break;
+                        }
+                        this.auxiliar.setRafaga(this.auxiliar.getRafaga() - 1);
+                        incrementarTiempo();
+                        encolarProgramados();
+                        notificarObservadores();
+                        try {
+                            Thread.sleep(this.retardo);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
+                    this.getTerminados().agregarNodo(copia);
+                    notificarGantt();
+                    this.getListos().eliminarNodo(this.auxiliar.id);
+                    notificarObservadores();
                 }
-                this.getTerminados().agregarNodo(copia);
-                notificarGantt();
-                this.getListos().eliminarNodo(this.auxiliar.id);
-                notificarObservadores();
-                }
-                
+
             }
         }
     }
-    
-    public void agregarNodo(){
+
+    public void agregarNodo() {
         ordenarNodosProgramados();
         Nodo nuevo = new Nodo();
         nuevo.setTiempoLlegada(nuevo.getTiempoLlegada() + this.getTiempo());
-        
-        if(nuevo.tiempoLlegada == 0){
+
+        if (nuevo.tiempoLlegada == 0) {
             this.getListos().agregarNodo(nuevo);
-        }else{
+        } else {
             nuevo.setId(this.pp);
             this.procesosProgramados.add(nuevo);
-            this.pp ++;
+            this.pp++;
         }
         ordenarNodosProgramados();
         notificarObservadores();
     }
-    
-    
-    public void eliminarNodo(int indice){
+
+    public void eliminarNodo(int indice) {
         this.getListos().eliminarNodo(indice);
         notificarObservadores();
     }
-    
+
     @Override
     public void notificarObservadores() {
-        for(int i = 0; i < this.observadores.size()-1; i++){
+        for (int i = 0; i < this.observadores.size() - 1; i++) {
             Observador observador = (Observador) this.observadores.get(i);
             observador.actualizarDatos(this);
         }
         //miObservador.actualizarDatos(this);
     }
-    
-    public void notificarGantt(){
+
+    public void notificarGantt() {
         Observador gantt = (Observador) this.observadores.get(2);
         gantt.actualizarDatos(this);
     }
@@ -203,40 +202,39 @@ public class Gestor implements Observable, Runnable {
     public void run() {
         atender();
     }
-    
-    public void ordenarNodosProgramados(){
+
+    public void ordenarNodosProgramados() {
         Nodo auxA;
         Nodo auxB;
-        for(int i = 1; i < this.procesosProgramados.size(); i++){            
-            for(int j = 0; j < this.procesosProgramados.size() - 1; j++){
+        for (int i = 1; i < this.procesosProgramados.size(); i++) {
+            for (int j = 0; j < this.procesosProgramados.size() - 1; j++) {
                 auxA = (Nodo) this.procesosProgramados.get(j);
-                auxB = (Nodo) this.procesosProgramados.get(j+1);
-                if(auxA.tiempoLlegada > auxB.tiempoLlegada){
-                    this.procesosProgramados.set(j, this.procesosProgramados.get(j+1));
-                    this.procesosProgramados.set(j+1, auxA);
+                auxB = (Nodo) this.procesosProgramados.get(j + 1);
+                if (auxA.tiempoLlegada > auxB.tiempoLlegada) {
+                    this.procesosProgramados.set(j, this.procesosProgramados.get(j + 1));
+                    this.procesosProgramados.set(j + 1, auxA);
                 }
             }
         }
     }
-    
-    public void mostrarNodosProgramados(){
-        for(int i = 0; i<this.procesosProgramados.size(); i++){
+
+    public void mostrarNodosProgramados() {
+        for (int i = 0; i < this.procesosProgramados.size(); i++) {
             Nodo a = (Nodo) this.procesosProgramados.get(i);
-            System.out.println("ID "+a.id+" TL "+ a.tiempoLlegada);
+            System.out.println("ID " + a.id + " TL " + a.tiempoLlegada);
         }
     }
-    
-    public void incrementarTiempo(){
+
+    public void incrementarTiempo() {
         //notificarObservadores();
-        this.setTiempo(this.getTiempo()+1);
-        
-        
+        this.setTiempo(this.getTiempo() + 1);
+
     }
-    
-    public void encolarProgramados(){
-        for(int i = 0; i < this.procesosProgramados.size(); i++){
+
+    public void encolarProgramados() {
+        for (int i = 0; i < this.procesosProgramados.size(); i++) {
             Nodo d = (Nodo) this.procesosProgramados.get(i);
-            if(d.getTiempoLlegada() == this.tiempo){
+            if (d.getTiempoLlegada() == this.tiempo) {
                 this.listos.agregarNodo(d);
                 notificarObservadores();
             }
