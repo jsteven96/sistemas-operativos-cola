@@ -132,6 +132,7 @@ public class Gestor implements Observable, Runnable {
                             copia2.setTiempoFinal(this.getTiempo() + this.auxiliar.getRafaga());
                             copia2.setTiempoRetorno(copia2.getTiempoFinal() - copia2.getTiempoLlegada());
                             copia2.setTiempoEspera(copia2.getTiempoRetorno() - copia2.getRafaga());
+                            copia2.setIniBloqueado(this.getTiempo());
                             this.listos.eliminarNodo(this.auxiliar.id);
                             this.bloqueados.agregarNodo(copia2);
                             notificarObservadores();
@@ -171,6 +172,29 @@ public class Gestor implements Observable, Runnable {
         }
         ordenarNodosProgramados();
         notificarObservadores();
+    }
+
+    public Nodo duplicarNodo(Nodo anterior) {
+        Nodo copia = new Nodo();
+        copia.setId(anterior.getId());
+        copia.setRafaga(anterior.getRafaga());
+        copia.setTiempoLlegada(anterior.getTiempoLlegada());
+        copia.setBloqueado(anterior.isBloqueado());
+        copia.setIniBloqueado(anterior.getIniBloqueado());
+        copia.setFinBloqueado(anterior.getFinBloqueado());
+        copia.setTiempoEspera(anterior.getTiempoEspera());
+        return copia;
+    }
+
+    public void desbloquearProceso() {
+        if (bloqueados.numElementos() > 0) {
+            Nodo bloq = duplicarNodo(bloqueados.cabeza.getSiguiente());
+            bloq.setFinBloqueado(this.getTiempo());
+            bloqueados.eliminarNodo(bloq.getId());
+            this.listos.agregarNodo(bloq);
+            //Modificar tiempos
+            this.notificarObservadores();
+        }
     }
 
     public void eliminarNodo(int indice) {

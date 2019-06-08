@@ -20,6 +20,8 @@ public class Nodo {
     public int tiempoEspera;
     public int prioridad;
     public boolean bloqueado;
+    public int iniBloqueado;
+    public int finBloqueado;
     
     
     public Nodo(){
@@ -29,6 +31,8 @@ public class Nodo {
         this.id = -2;
         this.tiempoLlegada = (int) (Math.random() * 4);
         this.prioridad = (int) (1 + Math.random() * 4);
+        this.iniBloqueado = -1;
+        this.finBloqueado = -1;
         this.tiempoComienzo = 0;
         this.tiempoFinal = 0;
         this.tiempoRetorno = 0;
@@ -36,6 +40,33 @@ public class Nodo {
         this.bloqueado = false;
     }    
 
+    public boolean isBloqueado() {
+        return bloqueado;
+    }
+
+    public void setBloqueado(boolean bloqueado) {
+        this.bloqueado = bloqueado;
+    }
+
+    public int getIniBloqueado() {
+        return iniBloqueado;
+    }
+
+    public void setIniBloqueado(int iniBloqueado) {
+        this.iniBloqueado = iniBloqueado;
+    }
+
+    public int getFinBloqueado() {
+        return finBloqueado;
+    }
+
+    public void setFinBloqueado(int finBloqueado) {
+        this.finBloqueado = finBloqueado;
+    }
+
+    
+    
+    
     public void setId(int id) {
         this.id = id;
     }
