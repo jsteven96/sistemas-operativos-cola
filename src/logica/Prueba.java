@@ -14,19 +14,25 @@ import interfaz.InterfazProcesos;
 public class Prueba {
     
     public static void main(String [] args) throws Exception{
+        /*
+        ColaPrioridad miCola = new ColaPrioridad();
+        Nodo nodo1 = new Nodo();
+        Nodo nodo2 = new Nodo();
+        Nodo nodo3 = new Nodo();
+        Nodo nodo4 = new Nodo();
+        Nodo nodo5 = new Nodo();
+        miCola.agregarNodo(nodo1);
+        miCola.agregarNodo(nodo2);
+        miCola.agregarNodo(nodo3);
+        miCola.agregarNodo(nodo4);
+        miCola.agregarNodo(nodo5);
+        Nodo nodo6 = new Nodo();
+        nodo6.setId(101);
+        miCola.agregarNodo(nodo6);
         
-        /*Cola prueba = new Cola();
-        Gestor miGestor = new Gestor(prueba);
-        miGestor.agregarNodo();
-        miGestor.agregarNodo();
-        miGestor.agregarNodo();
-        System.out.println("Listos");
-        miGestor.getListos().mostrarCola();
-        miGestor.ordenarNodosProgramados();
-        System.out.println("Ordenados");
-        miGestor.mostrarNodosProgramados();
-        System.out.println("Atendidos");
-        miGestor.atender();*/
+        miCola.mostrarCola();
+        miCola.eliminarNodo(4);
+        miCola.mostrarCola();*/
         InterfazProcesos UI = new InterfazProcesos();
         
     }

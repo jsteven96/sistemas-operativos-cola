@@ -50,18 +50,20 @@ public class Lienzo extends Canvas implements Observador{
      private void dibujarProcesos(Graphics g) {
         
         int x = 5, y = 20;
-        int x1 = 5, y1 = 105;
+        int x1 = 5, y1 = 115;
+        int x2 = 4, y2 = 210;
         g.setFont(new Font("Verdana", Font.PLAIN, 10));
         g.drawString("Cola de listos", 3, 10);
         g.drawRect(x, y, 30, 30);
         g.drawString("Id: "+Integer.toString(this.objGestor.getListos().cabeza.id), x, y+42);
         x +=50;
-        g.drawString("Nodos bloqueados", 3, 95);
+        g.drawString("Nodos bloqueados", 3, 105);
         g.setColor(Color.WHITE);
         g.fillRect(3, 160, 100, 20);
         g.setColor(Color.DARK_GRAY);
-        g.drawString("Tiempo", 3, 170);
-        g.drawString(Integer.toString(this.objGestor.getTiempo()), 3, 180);
+        g.drawString("Tiempo", 3, 180);
+        g.drawString(Integer.toString(this.objGestor.getTiempo()), 50, 180);
+        g.drawString("Nodos programados", 3, 200);
         
         this.auxiliar = this.objGestor.getListos().cabeza;
         while (this.auxiliar.siguiente.id != -1) {
@@ -74,6 +76,7 @@ public class Lienzo extends Canvas implements Observador{
             g.drawString("Id " + Integer.toString(this.auxiliar.id), x, y + 42);
             g.drawString("TL " + Integer.toString(this.auxiliar.tiempoLlegada), x, y + 53);
             g.drawString("R " + Integer.toString(this.auxiliar.rafaga), x, y + 64);
+            g.drawString("P " + Integer.toString(this.auxiliar.prioridad), x, y + 75);
             x += 40;
         }
         
@@ -82,25 +85,26 @@ public class Lienzo extends Canvas implements Observador{
         
         while(this.auxiliar.siguiente.id != -1){
             this.auxiliar = this.auxiliar.siguiente;
-            int i= this.auxiliar.siguiente.id;
+            int i= this.auxiliar.id;
             g.setColor(new Color(i*102%255, i*75%255, i*32%255));
             g.fillRect(x1, y1, 30, 30);
             g.setColor(Color.DARK_GRAY);
             g.drawString("Id: " + Integer.toString(this.auxiliar.id), x1, y1 + 42);
-            g.drawString("S: " + Integer.toString(this.auxiliar.rafaga), x1, y1 + 53);
+            g.drawString("R: " + Integer.toString(this.auxiliar.rafaga), x1, y1 + 53);
             x1 += 50;
         }
         
-        /*for(int i = 0; i < this.objGestor.procesosProgramados.size(); i++){
+        for(int i = 0; i < this.objGestor.procesosProgramados.size(); i++){
             g.setColor(Color.LIGHT_GRAY);
-            g.fillRect(x1, y1, 30, 30);
+            g.fillRect(x2, y2, 20, 20);
             g.setColor(Color.DARK_GRAY);
             Nodo a = new Nodo();
             a = (Nodo) this.objGestor.procesosProgramados.get(i);
-            g.drawString("Id " + Integer.toString(a.id), x1, y1 + 42);
-            g.drawString("TL " + Integer.toString(a.tiempoLlegada), x1, y1 + 53);
-            x1 += 50;
-        }*/
+            g.drawString("Id " + Integer.toString(a.id), x2, y2 + 42);
+            g.drawString("TL " + Integer.toString(a.tiempoLlegada), x2, y2 + 53);
+            g.drawString("P " + Integer.toString(a.prioridad), x2, y2 + 64);
+            x2 += 40;
+        }
         /*
         this.auxiliar = this.objGestor.terminados.cabeza;
         while (this.auxiliar.siguiente.id != -1) {
@@ -122,10 +126,7 @@ public class Lienzo extends Canvas implements Observador{
         if(this.objGestor == sujeto){
             this.auxiliar = this.objGestor.getListos().cabeza;
             repaint();
-        }
-        
-        
-        
+        }   
     }
     
     public void agregarNodo(){
@@ -139,6 +140,10 @@ public class Lienzo extends Canvas implements Observador{
     
     public void bloquearProceso(){
         this.objGestor.bloquearProceso();
+    }
+    
+    public void desbloquearProceso(){
+        this.objGestor.desbloquearProceso();
     }
     
     public void atender(){

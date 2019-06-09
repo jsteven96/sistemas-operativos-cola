@@ -49,7 +49,8 @@ public class Cola {
             auxiliar = auxiliar.siguiente;
         }
         if(auxiliar.siguiente.id != -1){
-            auxiliar.siguiente = auxiliar.siguiente.siguiente;    
+            auxiliar.siguiente = auxiliar.siguiente.siguiente;
+            
         }
     }
     

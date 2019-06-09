@@ -9,7 +9,7 @@ package logica;
  *
  * @author root
  */
-public class Nodo {
+public class Nodo implements Cloneable {
     public int rafaga;
     public int id;
     public Nodo siguiente;
@@ -27,7 +27,7 @@ public class Nodo {
         //this.siguiente = null;
         //El id -2 significa que no tiene id aún
         this.id = -2;
-        this.tiempoLlegada = (int) (Math.random() * 4);
+        this.tiempoLlegada = (int) (Math.random() * 3);
         this.prioridad = (int) (1 + Math.random() * 4);
         this.tiempoComienzo = 0;
         this.tiempoFinal = 0;
@@ -98,6 +98,19 @@ public class Nodo {
 
     public void setTiempoEspera(int tiempoEspera) {
         this.tiempoEspera = tiempoEspera;
+    }
+    
+    @Override
+    public Nodo clone(){
+        Nodo clon = new Nodo();
+        clon.setId(this.id);
+        clon.setRafaga(this.rafaga);
+        clon.setTiempoComienzo(this.tiempoComienzo);
+        clon.setTiempoEspera(this.tiempoEspera);
+        clon.setTiempoFinal(this.tiempoFinal);
+        clon.setTiempoLlegada(this.tiempoLlegada);
+        clon.setTiempoRetorno(this.tiempoRetorno);
+        return clon;
     }
     
     

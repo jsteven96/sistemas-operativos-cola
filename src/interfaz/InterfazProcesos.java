@@ -11,6 +11,7 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.UIManager;
 import logica.Cola;
+import logica.ColaPrioridad;
 import logica.Gestor;
 import logica.Nodo;
 
@@ -29,14 +30,16 @@ public class InterfazProcesos extends JFrame{
     private JButton btnAgregar;
     private JButton btnAtender;
     private JButton btnBloquear;
+    private JButton btnDesbloquear;
     private JButton btnSalir;
     public static final String AGREGAR_PROCESOS = "Agregar procesos";
     public static final String ELIMINAR_PROCESOS = "Eliminar procesos";
     public static final String ATENDER_PROCESOS = "Atender procesos";
-    public static final String BLOQUEAR_PROCESO = "Bloquear procesos";
+    public static final String BLOQUEAR_PROCESO = "Bloquear proceso";
+    public static final String DESBLOQUEAR_PROCESO = "Desbloquear proceso";
     public static final String SALIR = "Salir";
     private Lienzo miLienzo;
-    private Cola miCola;
+    private ColaPrioridad miCola;
     private Gestor miGestor;
     private Tabla miTabla;
     private JTable tblGantt;
@@ -68,6 +71,7 @@ public class InterfazProcesos extends JFrame{
         btnAgregar = new JButton(InterfazProcesos.AGREGAR_PROCESOS);
         btnAtender = new JButton(InterfazProcesos.ATENDER_PROCESOS);
         btnBloquear = new JButton(InterfazProcesos.BLOQUEAR_PROCESO);
+        btnDesbloquear = new JButton(InterfazProcesos.DESBLOQUEAR_PROCESO);
         btnSalir = new JButton(InterfazProcesos.SALIR);
         Controlador objControlador = new Controlador(this);
         btnEliminar.addActionListener(objControlador);
@@ -75,25 +79,28 @@ public class InterfazProcesos extends JFrame{
         btnSalir.addActionListener(objControlador);
         btnAtender.addActionListener(objControlador);
         btnBloquear.addActionListener(objControlador);
-        
+        btnDesbloquear.addActionListener(objControlador);
         btnEliminar.setFont(new Font("Verdana", Font.BOLD, 14));
         btnAgregar.setFont(new Font("Verdana", Font.BOLD, 14));
         btnSalir.setFont(new Font("Verdana", Font.BOLD, 14));
         btnAtender.setFont(new Font("Verdana", Font.BOLD, 14));
         btnBloquear.setFont(new Font("Verdana", Font.BOLD, 14));
+        btnDesbloquear.setFont(new Font("Verdana", Font.BOLD, 14));
         inicializar();
         //Creación del lienzo
         
         miLienzo = new Lienzo(miGestor);
-        miLienzo.setSize(400, 200);
+        miLienzo.setSize(400, 300);
         
         //Creación del diagrama de Gantt
         miTabla = new Tabla(miGestor);
         this.miTabla.dibujarProcesos();
         this.jScrollPanel = new JScrollPane();
         this.tblGantt = new JTable();
+        this.tblGantt.setSize(1000, 1000);
         this.tblGantt.setModel(this.miTabla.getModel());
         this.jScrollPanel.setViewportView(tblGantt);
+        
         
         //miDiagrama = new Diagrama(miGestor);
         this.miDiagramaPanel = new DiagramaPanel(miGestor);
@@ -109,6 +116,7 @@ public class InterfazProcesos extends JFrame{
         this.pnlBotones.add(this.btnEliminar);
         this.pnlBotones.add(this.btnAtender);
         this.pnlBotones.add(this.btnBloquear);
+        this.pnlBotones.add(this.btnDesbloquear);
         this.pnlBotones.add(this.btnSalir);
         
         
@@ -131,14 +139,13 @@ public class InterfazProcesos extends JFrame{
         }catch(Exception ex){
             System.out.println(ex);
         }
-        
         pack();
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
     public void inicializar(){
-        this.miCola = new Cola();
+        this.miCola = new ColaPrioridad();
         this.miGestor = new Gestor(miCola);
         this.miGestor.agregarNodo();
         this.miGestor.agregarNodo();
@@ -169,5 +176,9 @@ public class InterfazProcesos extends JFrame{
     
     public void bloquearProceso(){
         this.miLienzo.bloquearProceso();
+    }
+    
+    public void desbloquearProceso(){
+        this.miLienzo.desbloquearProceso();
     }
 }

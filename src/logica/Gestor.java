@@ -16,18 +16,17 @@ import java.util.logging.Logger;
  */
 public class Gestor implements Observable, Runnable {
 
-    private Cola listos;
+    private ColaPrioridad listos;
     private Cola terminados;
     private Cola bloqueados;
     public Nodo auxiliar;
     public ArrayList observadores;
-    //public Observador miObservador;
     public int retardo;
     private int tiempo;
     public ArrayList procesosProgramados;
     public int pp;
 
-    public Gestor(Cola cola) {
+    public Gestor(ColaPrioridad cola) {
         this.listos = cola;
         this.terminados = new Cola();
         this.auxiliar = new Nodo();
@@ -40,11 +39,11 @@ public class Gestor implements Observable, Runnable {
 
     }
 
-    public synchronized Cola getListos() {
+    public synchronized ColaPrioridad getListos() {
         return listos;
     }
 
-    public void setListos(Cola listos) {
+    public void setListos(ColaPrioridad listos) {
         this.listos = listos;
     }
 
@@ -81,79 +80,55 @@ public class Gestor implements Observable, Runnable {
     }
 
     public void bloquearProceso() {
-        this.auxiliar.bloqueado = true;
+        Nodo copia;
+        copia = this.auxiliar.clone();
+        this.bloqueados.agregarNodo(copia);
+        this.listos.eliminarNodo(copia.id);
+    }
+    
+    public void desbloquearProceso(){
+        Nodo copia;
+        copia = this.getBloqueados().cabeza.siguiente.clone();
+        this.bloqueados.eliminarNodo(copia.id);
+        this.listos.agregarNodo(copia);
+    }
+    
+    public void agregarATerminados(int rafagaParcial){
+        Nodo copia;
+        copia = this.auxiliar.clone();
+        copia.rafaga = rafagaParcial;
+        copia.tiempoComienzo = this.getTiempo()-rafagaParcial;
+        copia.setTiempoLlegada(this.auxiliar.getTiempoLlegada());
+        copia.tiempoFinal = this.tiempo;
+        copia.setTiempoRetorno(copia.getTiempoFinal() - copia.getTiempoLlegada());
+        copia.setTiempoEspera(copia.getTiempoRetorno() - copia.getRafaga());
+        this.terminados.agregarNodo(copia);
+        notificarGantt();
+        notificarObservadores();
+        this.listos.eliminarNodo(copia.id);
+        notificarObservadores();
     }
 
     public void atender() {
-        while (true) {
-            this.auxiliar = this.getListos().cabeza;
-            if (this.listos.numElementos() == 0) {
-                incrementarTiempo();
-                encolarProgramados();
-                this.listos.mostrarCola();
-                notificarObservadores();
-                try {
+        int rafagaP = 0;
+        while(true){
+            
+            this.auxiliar = this.listos.cabeza.siguiente;
+            rafagaP ++;
+            this.auxiliar.setRafaga(this.auxiliar.getRafaga()-1);
+            this.tiempo++;
+            encolarProgramados();
+            notificarObservadores();
+            if(this.auxiliar.rafaga == 0){
+                agregarATerminados(rafagaP);
+                rafagaP = 0;
+            }
+             try {
                     Thread.sleep(this.retardo);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
-
-            while (this.auxiliar.siguiente.id != -1) {
-                this.auxiliar = this.auxiliar.siguiente;
-                if (this.auxiliar.bloqueado == true) {
-                    Nodo copia = new Nodo();
-                    copia.setId(this.getAuxiliar().id);
-                    copia.setRafaga(this.getAuxiliar().getRafaga());
-                    copia.setTiempoComienzo(this.getTiempo());
-                    copia.setTiempoLlegada(this.auxiliar.getTiempoLlegada());
-                    copia.setTiempoFinal(this.getTiempo() + this.auxiliar.getRafaga());
-                    copia.setTiempoRetorno(copia.getTiempoFinal() - copia.getTiempoLlegada());
-                    copia.setTiempoEspera(copia.getTiempoRetorno() - copia.getRafaga());
-                    this.listos.eliminarNodo(this.auxiliar.id);
-                    this.bloqueados.agregarNodo(copia);
-                    notificarObservadores();
-                } else {
-                    Nodo copia = new Nodo();
-                    copia.setId(this.getAuxiliar().id);
-                    copia.setRafaga(this.getAuxiliar().getRafaga());
-                    copia.setTiempoComienzo(this.getTiempo());
-                    copia.setTiempoLlegada(this.auxiliar.getTiempoLlegada());
-                    copia.setTiempoFinal(this.getTiempo() + this.auxiliar.getRafaga());
-                    copia.setTiempoRetorno(copia.getTiempoFinal() - copia.getTiempoLlegada());
-                    copia.setTiempoEspera(copia.getTiempoRetorno() - copia.getRafaga());
-                    for (int i = 0; i < copia.getRafaga(); i++) {
-                        if (this.auxiliar.bloqueado == true) {
-                            Nodo copia2 = new Nodo();
-                            copia2.setId(this.getAuxiliar().id);
-                            copia2.setRafaga(this.getAuxiliar().getRafaga());
-                            copia2.setTiempoComienzo(this.getTiempo());
-                            copia2.setTiempoLlegada(this.auxiliar.getTiempoLlegada());
-                            copia2.setTiempoFinal(this.getTiempo() + this.auxiliar.getRafaga());
-                            copia2.setTiempoRetorno(copia2.getTiempoFinal() - copia2.getTiempoLlegada());
-                            copia2.setTiempoEspera(copia2.getTiempoRetorno() - copia2.getRafaga());
-                            this.listos.eliminarNodo(this.auxiliar.id);
-                            this.bloqueados.agregarNodo(copia2);
-                            notificarObservadores();
-                            break;
-                        }
-                        this.auxiliar.setRafaga(this.auxiliar.getRafaga() - 1);
-                        incrementarTiempo();
-                        encolarProgramados();
-                        notificarObservadores();
-                        try {
-                            Thread.sleep(this.retardo);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    this.getTerminados().agregarNodo(copia);
-                    notificarGantt();
-                    this.getListos().eliminarNodo(this.auxiliar.id);
-                    notificarObservadores();
-                }
-
-            }
+            
         }
     }
 
