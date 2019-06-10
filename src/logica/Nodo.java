@@ -20,6 +20,9 @@ public class Nodo implements Cloneable {
     public int tiempoEspera;
     public int prioridad;
     public boolean bloqueado;
+    public int iniBloqueado;
+    public int finBloqueado;
+    public int rafagaParcial;
     
     
     public Nodo(){
@@ -33,9 +36,30 @@ public class Nodo implements Cloneable {
         this.tiempoFinal = 0;
         this.tiempoRetorno = 0;
         this.tiempoEspera = 0;
+        this.iniBloqueado = -1;
+        this.finBloqueado = -1;
         this.bloqueado = false;
+        this.rafagaParcial = 0;
     }    
 
+    public int getIniBloqueado() {
+        return iniBloqueado;
+    }
+
+    public void setIniBloqueado(int iniBloqueado) {
+        this.iniBloqueado = iniBloqueado;
+    }
+
+    public int getFinBloqueado() {
+        return finBloqueado;
+    }
+
+    public void setFinBloqueado(int finBloqueado) {
+        this.finBloqueado = finBloqueado;
+    }
+    
+    
+    
     public void setId(int id) {
         this.id = id;
     }
@@ -99,6 +123,24 @@ public class Nodo implements Cloneable {
     public void setTiempoEspera(int tiempoEspera) {
         this.tiempoEspera = tiempoEspera;
     }
+
+    public boolean isBloqueado() {
+        return bloqueado;
+    }
+
+    public void setBloqueado(boolean bloqueado) {
+        this.bloqueado = bloqueado;
+    }
+
+    public int getRafagaParcial() {
+        return rafagaParcial;
+    }
+
+    public void setRafagaParcial(int rafagaParcial) {
+        this.rafagaParcial = rafagaParcial;
+    }
+    
+    
     
     @Override
     public Nodo clone(){
@@ -110,6 +152,8 @@ public class Nodo implements Cloneable {
         clon.setTiempoFinal(this.tiempoFinal);
         clon.setTiempoLlegada(this.tiempoLlegada);
         clon.setTiempoRetorno(this.tiempoRetorno);
+        clon.setIniBloqueado(this.iniBloqueado);
+        clon.setFinBloqueado(this.finBloqueado);
         return clon;
     }
     

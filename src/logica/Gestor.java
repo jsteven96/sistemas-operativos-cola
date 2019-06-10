@@ -30,7 +30,7 @@ public class Gestor implements Observable, Runnable {
         this.listos = cola;
         this.terminados = new Cola();
         this.auxiliar = new Nodo();
-        this.retardo = 1000;
+        this.retardo = 2000;
         this.tiempo = 0;
         this.bloqueados = new Cola();
         this.observadores = new ArrayList();
@@ -81,29 +81,34 @@ public class Gestor implements Observable, Runnable {
 
     public void bloquearProceso() {
         Nodo copia;
-        copia = this.auxiliar.clone();
-        this.bloqueados.agregarNodo(copia);
-        this.listos.eliminarNodo(copia.id);
+        if (this.auxiliar.getRafaga() != 0) {
+            this.auxiliar.setIniBloqueado(this.tiempo);
+            copia = this.auxiliar.clone();
+            this.bloqueados.agregarNodo(copia);
+            this.listos.eliminarNodo(copia.id);
+        }
     }
-    
-    public void desbloquearProceso(){
+
+    public void desbloquearProceso() {
         Nodo copia;
         copia = this.getBloqueados().cabeza.siguiente.clone();
+        copia.setFinBloqueado(this.tiempo);
+        
         this.bloqueados.eliminarNodo(copia.id);
         this.listos.agregarNodo(copia);
+        System.out.println("TI "+copia.getIniBloqueado()+" TF "+copia.getFinBloqueado());
     }
-    
-    public void agregarATerminados(int rafagaParcial){
+
+    public void agregarATerminados(int rafagaParcial) {
         Nodo copia;
         copia = this.auxiliar.clone();
         copia.rafaga = rafagaParcial;
-        copia.tiempoComienzo = this.getTiempo()-rafagaParcial;
+        copia.tiempoComienzo = this.getTiempo() - rafagaParcial;
         copia.setTiempoLlegada(this.auxiliar.getTiempoLlegada());
         copia.tiempoFinal = this.tiempo;
         copia.setTiempoRetorno(copia.getTiempoFinal() - copia.getTiempoLlegada());
         copia.setTiempoEspera(copia.getTiempoRetorno() - copia.getRafaga());
         this.terminados.agregarNodo(copia);
-        notificarGantt();
         notificarObservadores();
         this.listos.eliminarNodo(copia.id);
         notificarObservadores();
@@ -111,24 +116,27 @@ public class Gestor implements Observable, Runnable {
 
     public void atender() {
         int rafagaP = 0;
-        while(true){
-            
+        this.auxiliar = this.listos.cabeza;
+        while (true) {
+            notificarGantt();
             this.auxiliar = this.listos.cabeza.siguiente;
-            rafagaP ++;
-            this.auxiliar.setRafaga(this.auxiliar.getRafaga()-1);
+            rafagaP++;
+            this.auxiliar.setRafaga(this.auxiliar.getRafaga() - 1);
+            this.auxiliar.setRafagaParcial(this.auxiliar.getRafagaParcial()+1);
+            notificarGantt();
             this.tiempo++;
             encolarProgramados();
             notificarObservadores();
-            if(this.auxiliar.rafaga == 0){
+            if (this.auxiliar.rafaga <= 0) {
                 agregarATerminados(rafagaP);
                 rafagaP = 0;
             }
-             try {
-                    Thread.sleep(this.retardo);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            
+            try {
+                Thread.sleep(this.retardo);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
     }
 
