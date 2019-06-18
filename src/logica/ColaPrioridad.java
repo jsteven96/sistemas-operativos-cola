@@ -19,6 +19,7 @@ public class ColaPrioridad {
         this.cabeza = new Nodo();
         this.cabeza.setId(-1);
         this.cabeza.setRafaga(0);
+        this.cabeza.prioridad = 4;
         this.cabeza.siguiente = this.cabeza;
         this.ultimo = 0;
     }
@@ -82,6 +83,14 @@ public class ColaPrioridad {
             contador++;
         }
         return contador;
+    }
+    
+    public Nodo buscarNodo(int id){
+        this.auxiliar = this.cabeza;
+        while(this.auxiliar.siguiente.id != id){
+            this.auxiliar = this.auxiliar.siguiente;
+        }
+        return this.auxiliar.siguiente;
     }
     
 }

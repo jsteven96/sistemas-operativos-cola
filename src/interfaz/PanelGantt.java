@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 import javax.swing.JPanel;
 import logica.Gestor;
 import logica.Nodo;
@@ -26,6 +27,7 @@ public class PanelGantt extends JPanel implements Observador {
     private Nodo auxiliar;
     private Map<Integer, Integer> posiciones;
     private int fila;
+    private Vector atendidos;
     
     public PanelGantt(Gestor inpObjGestor){
         this.objGestor = inpObjGestor;
@@ -35,25 +37,35 @@ public class PanelGantt extends JPanel implements Observador {
         setPreferredSize(new Dimension(4000, 500));
         this.posiciones = new HashMap<>();
         this.fila = 0;
+        this.atendidos = new Vector();
     }
     
     public void dibujarProcesos(Graphics g){
         limpiar(g);
-        /*
+        
         int x = 40, y = 40;
         int cont = 0;
         int col = 0;
         g.setFont(new Font("Verdana", Font.PLAIN, 13));
+        g.setColor(Color.BLACK);
+        
+        for(int i = 0; i < this.objGestor.estado.size(); i++){
+            for(int j = 0; j < this.objGestor.estado.get(i).size(); j++){
+                g.drawString(this.objGestor.estado.get(i).get(j)+"", x, y);
+                x+=40;
+            }
+            x = 40;
+            y += 30;
+        }
+
+        /*
         this.auxiliar = this.objGestor.getTerminados().cabeza;
         
         while(this.auxiliar.siguiente.id != -1){
             this.auxiliar = this.auxiliar.siguiente;
-            col += this.auxiliar.rafaga;
+            
         }
-        
-         
-        
-        System.out.println(col);
+        col += this.auxiliar.tiempoFinal;
         
         for(int i = 0; i <= col; i++){
             g.setColor(Color.LIGHT_GRAY);
@@ -72,19 +84,20 @@ public class PanelGantt extends JPanel implements Observador {
             g.setColor(Color.BLACK);
             g.drawString(Integer.toString(this.auxiliar.id), 0, y+13);
             for(int i = this.auxiliar.tiempoLlegada; i < this.auxiliar.getTiempoFinal(); i++){
+                 if(i >= this.auxiliar.iniBloqueado && i <= this.auxiliar.finBloqueado){
+                        g.setColor(Color.red);
+                        g.fillRect(21*i+x, y, 20, 20);
+                    }
                 if(i < this.auxiliar.tiempoComienzo){
                     g.setColor(Color.BLACK);
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(21*i+x, y, 20, 20);
                     cont++;  
                 }else{
-                    if(i > this.auxiliar.iniBloqueado || i < this.auxiliar.finBloqueado){
-                        g.setColor(Color.red);
-                        g.fillRect(21*i+x, y, 20, 20);
-                    }
                     g.setColor(Color.BLACK);
                     //g.drawString(Integer.toString(col), 21*i+x, 10);
-                    int s= this.auxiliar.id;
+                    int s= this.auxiliar.id % 1000;
+                    
                     g.setColor(new Color(s * 102 % 255, s * 75 % 255, s * 32 % 255));
                     g.fillRect(21*i+x, y, 20, 20);
                     cont++; 
@@ -92,24 +105,6 @@ public class PanelGantt extends JPanel implements Observador {
             }
             y += 24;
         }*/
-        
-        //--------------Intento de dibujadoal que se está atendiendo
-        int x = 0, y = 0;
-        int columna = 0;
-        this.auxiliar = this.objGestor.auxiliar;
-        this.posiciones.put(this.objGestor.auxiliar.id, fila);
-        this.fila++;
-        if (this.auxiliar.id != -1) {
-            for (int i = 0; i < this.auxiliar.rafagaParcial; i++) {
-                g.setColor(Color.red);
-                g.fillRect(21 * i + x,21 * this.posiciones.size(), 10, 10);
-
-            }
-        }
-        
-       
-        
-        
     }
     
     public void limpiar(Graphics g){

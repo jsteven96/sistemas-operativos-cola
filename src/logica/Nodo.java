@@ -20,8 +20,8 @@ public class Nodo implements Cloneable {
     public int tiempoEspera;
     public int prioridad;
     public boolean bloqueado;
-    public int iniBloqueado;
-    public int finBloqueado;
+    public boolean enEjecucion;
+    public boolean listo;
     public int rafagaParcial;
     
     
@@ -36,29 +36,13 @@ public class Nodo implements Cloneable {
         this.tiempoFinal = 0;
         this.tiempoRetorno = 0;
         this.tiempoEspera = 0;
-        this.iniBloqueado = -1;
-        this.finBloqueado = -1;
+        
+        
         this.bloqueado = false;
+        this.enEjecucion = false;
+        this.listo = true;
         this.rafagaParcial = 0;
     }    
-
-    public int getIniBloqueado() {
-        return iniBloqueado;
-    }
-
-    public void setIniBloqueado(int iniBloqueado) {
-        this.iniBloqueado = iniBloqueado;
-    }
-
-    public int getFinBloqueado() {
-        return finBloqueado;
-    }
-
-    public void setFinBloqueado(int finBloqueado) {
-        this.finBloqueado = finBloqueado;
-    }
-    
-    
     
     public void setId(int id) {
         this.id = id;
@@ -152,8 +136,7 @@ public class Nodo implements Cloneable {
         clon.setTiempoFinal(this.tiempoFinal);
         clon.setTiempoLlegada(this.tiempoLlegada);
         clon.setTiempoRetorno(this.tiempoRetorno);
-        clon.setIniBloqueado(this.iniBloqueado);
-        clon.setFinBloqueado(this.finBloqueado);
+        
         return clon;
     }
     
