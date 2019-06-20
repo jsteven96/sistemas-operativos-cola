@@ -90,22 +90,15 @@ public class Gestor implements Observable, Runnable {
     }
 
     public void bloquearProceso() {
-        Nodo copiaTerminados;
+        
         Nodo copiaBloqueados;
         if (this.enEjecucion.getRafaga() != 0) {
-            
-            copiaTerminados = this.enEjecucion.clone();
-            copiaTerminados.setRafaga(this.enEjecucion.getRafagaParcial());
-            copiaTerminados.tiempoComienzo = this.getTiempo() - this.rafagaEjecutada;
-            copiaTerminados.setTiempoFinal(copiaTerminados.tiempoComienzo + copiaTerminados.rafaga);
-            copiaTerminados.setTiempoRetorno(copiaTerminados.getTiempoFinal() - copiaTerminados.getTiempoLlegada());
-            copiaTerminados.setTiempoEspera(copiaTerminados.getTiempoRetorno() - copiaTerminados.getRafaga());
-
             copiaBloqueados = this.enEjecucion.clone();
-            copiaBloqueados.setId(copiaBloqueados.getId() + 1000);
+            copiaBloqueados.bloqueado = true;
+            copiaBloqueados.setIniBloq(this.tiempo);
             this.bloqueados.agregarNodo(copiaBloqueados);
-            this.listos.eliminarNodo(copiaTerminados.id);
-            this.terminados.agregarNodo(copiaTerminados);
+            this.atendiendo = false;
+            
             this.rafagaEjecutada = 0;
             notificarGantt();
         }
@@ -116,8 +109,11 @@ public class Gestor implements Observable, Runnable {
         copia = this.getBloqueados().cabeza.siguiente.clone();
         
         copia.setTiempoComienzo(this.tiempo);
-        
+        copia.setFinBloq(this.tiempo);
+        copia.setTiempoBloqueado(copia.finBloq-copia.iniBloq);
+        copia.setTiempoEspera(0);
         copia.setTiempoFinal(copia.tiempoComienzo + copia.rafagaParcial);
+        
         this.bloqueados.eliminarNodo(copia.id);
         this.listos.agregarNodo(copia);
         
@@ -128,7 +124,7 @@ public class Gestor implements Observable, Runnable {
         copia = this.enEjecucion.clone();
         copia.rafaga = this.rafagaEjecutada;
         copia.tiempoComienzo = this.tiempo - this.rafagaEjecutada;
-        //copia.setTiempoLlegada(this.enEjecucion.getTiempoLlegada());
+        
         copia.tiempoFinal = this.tiempo;
         copia.setTiempoRetorno(copia.getTiempoFinal() - copia.getTiempoLlegada());
         copia.setTiempoEspera(copia.getTiempoRetorno() - copia.getRafaga());
@@ -155,7 +151,10 @@ public class Gestor implements Observable, Runnable {
                 this.enEjecucion.listo = false;
                 this.enEjecucion.enEjecucion = true;
                 this.enEjecucion.setTiempoComienzo(this.tiempo);
-                dibujarTiempo();
+                if(this.enEjecucion.bloqueado == false){
+                    dibujarTiempo();
+                }
+                dibujarTiempoBloqueado();
                 dibujarTiempoDeEspera();
                 this.listos.eliminarNodo(this.enEjecucion.id);
                 this.atendiendo = true;
@@ -172,7 +171,7 @@ public class Gestor implements Observable, Runnable {
 
                 if (this.enEjecucion.rafaga == 0) {
                     Nodo copia = this.enEjecucion.clone();
-                    copia.setTiempoFinal(this.tiempo);
+                    copia.setTiempoFinal(this.tiempo+1);
                     copia.setRafaga(this.enEjecucion.getRafagaParcial());
                     
                     this.terminados.agregarNodo(copia);
@@ -219,8 +218,14 @@ public class Gestor implements Observable, Runnable {
    }
    
    public void dibujarTiempoDeEspera(){
+       /*
        if(this.enEjecucion.id != -1){
             for(int i = this.enEjecucion.tiempoLlegada; i < this.enEjecucion.tiempoComienzo; i++){
+                this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(1);
+            }
+        }*/
+       if(this.enEjecucion.id != -1){
+            for(int i = 0; i < this.enEjecucion.tiempoEspera; i++){
                 this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(1);
             }
         }
@@ -230,7 +235,21 @@ public class Gestor implements Observable, Runnable {
         this.auxiliar = this.listos.cabeza;
         while(this.auxiliar.siguiente.id != -1){
             this.auxiliar = this.auxiliar.siguiente;
-            this.auxiliar.setTiempoEspera(this.tiempo);
+            this.auxiliar.setTiempoEspera(this.auxiliar.getTiempoEspera() + 1);
+        }
+        /*
+        this.auxiliar = this.bloqueados.cabeza;
+        while(this.auxiliar.siguiente.id != -1){
+            this.auxiliar = this.auxiliar.siguiente;
+            this.auxiliar.setTiempoEspera(this.auxiliar.getTiempoEspera() + 1);
+        }*/
+    }
+    
+    public void dibujarTiempoBloqueado(){
+         if(this.enEjecucion.id != -1){
+            for(int i = 0; i < this.enEjecucion.tiempoBloqueado; i++){
+                this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(3);
+            }
         }
     }
     
@@ -242,7 +261,6 @@ public class Gestor implements Observable, Runnable {
 
         if (nuevo.tiempoLlegada == 0) {
             this.getListos().agregarNodo(nuevo);
-            
             guardarProcesos();
         } else {
             nuevo.setId(this.pp);

@@ -141,6 +141,7 @@ public class InterfazProcesos extends JFrame{
         }
         pack();
         setVisible(true);
+        setLocation(900,0);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     

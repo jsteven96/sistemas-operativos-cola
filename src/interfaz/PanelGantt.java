@@ -34,7 +34,7 @@ public class PanelGantt extends JPanel implements Observador {
         this.auxiliar = this.objGestor.getTerminados().cabeza;
         setBackground(Color.WHITE);
         this.objGestor.registrar(this);
-        setPreferredSize(new Dimension(4000, 500));
+        //setPreferredSize(new Dimension(4000, 1000));
         this.posiciones = new HashMap<>();
         this.fila = 0;
         this.atendidos = new Vector();
@@ -44,6 +44,7 @@ public class PanelGantt extends JPanel implements Observador {
         limpiar(g);
         
         int x = 40, y = 40;
+         
         int cont = 0;
         int col = 0;
         g.setFont(new Font("Verdana", Font.PLAIN, 13));
@@ -57,7 +58,43 @@ public class PanelGantt extends JPanel implements Observador {
             x = 40;
             y += 30;
         }
-
+        
+       
+       
+        int x1 = 40, y1 = 421;
+        
+        for(int i = 0; i < this.objGestor.estado.size(); i++){
+                g.drawString(this.objGestor.estado.get(i).get(0)+"", 10, y1);
+            y1 += 22;
+        }
+        
+        y1 = 400;
+        
+        for(int i = 0; i < this.objGestor.estado.size(); i++){
+            for(int j = 1; j < this.objGestor.estado.get(i).size(); j++){
+                
+                if(this.objGestor.estado.get(i).get(j).equals(0)){
+                    g.setColor(Color.LIGHT_GRAY);
+                    g.drawRect(x1,y1, 18, 18);
+                }
+                if(this.objGestor.estado.get(i).get(j).equals(1)){
+                    g.setColor(Color.LIGHT_GRAY);
+                    g.fillRect(x1,y1, 20, 20);
+                }
+                if(this.objGestor.estado.get(i).get(j).equals(2)){
+                    int s =(Integer) this.objGestor.estado.get(i).get(0);
+                    g.setColor(new Color(s * 102 % 255, s * 75 % 255, s * 32 % 255));
+                    g.fillRect(x1,y1, 20, 20);
+                }
+                if(this.objGestor.estado.get(i).get(j).equals(3)){
+                    g.setColor(Color.RED);
+                    g.fillRect(x1,y1, 20, 20);
+                }
+               x1+=21;
+            }
+            x1 = 40;
+            y1 += 22;
+        }
         /*
         this.auxiliar = this.objGestor.getTerminados().cabeza;
         

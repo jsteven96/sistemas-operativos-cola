@@ -27,13 +27,14 @@ public class DiagramaPanel extends JFrame{
         super("Diagrama de Gantt");
         this.objGestor = inpObjGestor;
         this.miPanel = new PanelGantt(this.objGestor);
-        this.miPanel.setBounds(500, 500, 1600, 300);
+        this.miPanel.setPreferredSize(new Dimension(4000,2000));
+       
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.jsp = new JScrollPane();
-        this.jsp.setBounds(5, 112, 100, 100);
-        jsp.setViewportView(this.miPanel);
         
-        //this.objGestor.registrar(this);
+        jsp.setViewportView(this.miPanel);
+        this.jsp.setPreferredSize(new Dimension(900,600));
+        
         Container contenedor = getContentPane();
         contenedor.add(jsp);
         
