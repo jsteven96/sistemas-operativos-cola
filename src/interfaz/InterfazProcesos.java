@@ -39,7 +39,8 @@ public class InterfazProcesos extends JFrame{
     public static final String DESBLOQUEAR_PROCESO = "Desbloquear proceso";
     public static final String SALIR = "Salir";
     private Lienzo miLienzo;
-    private ColaPrioridad miCola;
+    //private ColaPrioridad miCola;
+    private Cola miCola;
     private Gestor miGestor;
     private Tabla miTabla;
     private JTable tblGantt;
@@ -146,7 +147,7 @@ public class InterfazProcesos extends JFrame{
     }
     
     public void inicializar(){
-        this.miCola = new ColaPrioridad();
+        this.miCola = new Cola();
         this.miGestor = new Gestor(miCola);
         this.miGestor.agregarNodo();
         this.miGestor.agregarNodo();

@@ -18,7 +18,8 @@ import java.util.logging.Logger;
 
 public class Gestor implements Observable, Runnable {
 
-    private ColaPrioridad listos;
+    //private ColaPrioridad listos;
+    private Cola listos;
     private Cola terminados;
     private Cola bloqueados;
     public Nodo enEjecucion;
@@ -33,7 +34,7 @@ public class Gestor implements Observable, Runnable {
     public boolean atendiendo;
     public ArrayList<Integer> procesos;
 
-    public Gestor(ColaPrioridad cola) {
+    public Gestor(Cola cola) {
         this.listos = cola;
         this.terminados = new Cola();
         
@@ -49,11 +50,11 @@ public class Gestor implements Observable, Runnable {
         this.procesos = new ArrayList();
     }
 
-    public ColaPrioridad getListos() {
+    public Cola getListos() {
         return listos;
     }
 
-    public void setListos(ColaPrioridad listos) {
+    public void setListos(Cola listos) {
         this.listos = listos;
     }
 
@@ -134,7 +135,8 @@ public class Gestor implements Observable, Runnable {
             
             guardarProcesos();
             notificarGantt();
-
+            //Si no hay nadie siendo atendido y el que sigue de la cabeza de listos no es la misma cabeza
+            //pase en ejecución al siguiente de la cabeza
             if (this.atendiendo == false && this.listos.cabeza.siguiente.id != -1) {
                 this.enEjecucion = this.listos.cabeza.siguiente.clone();
                 this.enEjecucion.listo = false;
@@ -150,6 +152,10 @@ public class Gestor implements Observable, Runnable {
                 notificarObservadores();
             }
             
+           
+            
+            //Si hay alguien en atención, disminuya la rafaga en uno y aumente la rafaga ejecutada general
+            
             if(this.atendiendo == true){
                 if (this.enEjecucion.id != -1) {
                 this.enEjecucion.setRafaga(this.enEjecucion.getRafaga() - 1);
@@ -158,7 +164,26 @@ public class Gestor implements Observable, Runnable {
                 actualizarTiempoEspera();
                 actualizarEstado();
                 notificarObservadores();
-
+                
+                //------------Nuevo código para Round Robin
+                if(this.rafagaEjecutada == 4  && this.enEjecucion.rafaga>0){
+                    Nodo copia = this.enEjecucion.clone();
+                    this.enEjecucion.setId(-1);
+                    copia.bloqueado = true;
+                    copia.tiempoEspera = 0;
+                    copia.gettFinal().add(this.tiempo+1);
+                    copia.getRafagaEjecutada().add(this.rafagaEjecutada);
+                    copia.gettRetorno().add(copia.gettFinal().get(copia.gettFinal().size()-1)-copia.getTiempoLlegada());
+                    copia.gettEspera().add(copia.gettRetorno().get(copia.gettRetorno().size()-1)-copia.getRafagaParcial());
+                    
+                    this.listos.agregarNodo(copia);
+                    this.atendiendo = false;
+                    this.rafagaEjecutada = 0;
+                }
+                //------------
+            
+               
+                
                 if (this.enEjecucion.rafaga == 0) {
                     Nodo copia = this.enEjecucion.clone();
                     copia.gettFinal().add(this.tiempo+1);
@@ -168,6 +193,7 @@ public class Gestor implements Observable, Runnable {
                     this.terminados.agregarNodo(copia);
                     notificarObservadores();
                     this.atendiendo = false;
+                    this.rafagaEjecutada = 0;
                     this.enEjecucion.setId(-1);
                 }
 

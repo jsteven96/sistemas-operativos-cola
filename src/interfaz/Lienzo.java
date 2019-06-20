@@ -116,7 +116,7 @@ public class Lienzo extends Canvas implements Observador{
             a = (Nodo) this.objGestor.procesosProgramados.get(i);
             g.drawString("Id " + Integer.toString(a.id), x2, y2 + 42);
             g.drawString("TL " + Integer.toString(a.tiempoLlegada), x2, y2 + 53);
-            g.drawString("P " + Integer.toString(a.prioridad), x2, y2 + 64);
+            g.drawString("R " + Integer.toString(a.rafaga), x2, y2 + 64);
             x2 += 40;
         }
     }
