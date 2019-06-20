@@ -42,33 +42,35 @@ public class PanelGantt extends JPanel implements Observador {
     
     public void dibujarProcesos(Graphics g){
         limpiar(g);
-        
+        /*
         int x = 40, y = 40;
          
         int cont = 0;
-        int col = 0;
-        g.setFont(new Font("Verdana", Font.PLAIN, 13));
-        g.setColor(Color.BLACK);
+        
+        
         
         for(int i = 0; i < this.objGestor.estado.size(); i++){
             for(int j = 0; j < this.objGestor.estado.get(i).size(); j++){
                 g.drawString(this.objGestor.estado.get(i).get(j)+"", x, y);
+                
                 x+=40;
             }
             x = 40;
             y += 30;
         }
+        */
+        int col = 0;
+        int x1 = 40, y1 = 40;
         
-       
-       
-        int x1 = 40, y1 = 421;
+        g.setFont(new Font("Verdana", Font.PLAIN, 13));
+        g.setColor(Color.BLACK);
         
         for(int i = 0; i < this.objGestor.estado.size(); i++){
-                g.drawString(this.objGestor.estado.get(i).get(0)+"", 10, y1);
+                g.drawString(this.objGestor.estado.get(i).get(0)+"", 10, y1+20);
             y1 += 22;
         }
         
-        y1 = 400;
+        y1 = 40;
         
         for(int i = 0; i < this.objGestor.estado.size(); i++){
             for(int j = 1; j < this.objGestor.estado.get(i).size(); j++){
@@ -95,23 +97,28 @@ public class PanelGantt extends JPanel implements Observador {
             x1 = 40;
             y1 += 22;
         }
+        
+        x1 = 40;
+
+        if (this.objGestor.getTerminados().numElementos() != 0) {
+            this.auxiliar = this.objGestor.getTerminados().cabeza;
+
+            while (this.auxiliar.siguiente.id != -1) {
+                this.auxiliar = this.auxiliar.siguiente;
+
+            }
+            col += this.auxiliar.gettFinal().get(this.auxiliar.gettFinal().size() - 1);
+
+            for (int i = 0; i <= col; i++) {
+                g.setColor(Color.LIGHT_GRAY);
+                g.drawRect((i * 21) + x1, 0, 20, 20);
+                g.setColor(Color.BLACK);
+                g.drawString(" " + Integer.toString(i), (i * 21) + x1, 11);
+            }
+        }
+
+        
         /*
-        this.auxiliar = this.objGestor.getTerminados().cabeza;
-        
-        while(this.auxiliar.siguiente.id != -1){
-            this.auxiliar = this.auxiliar.siguiente;
-            
-        }
-        col += this.auxiliar.tiempoFinal;
-        
-        for(int i = 0; i <= col; i++){
-            g.setColor(Color.LIGHT_GRAY);
-            g.drawRect((i*21)+x, 0, 20, 20);
-            g.setColor(Color.BLACK);
-            g.drawString(" "+Integer.toString(i), (i*21)+x, 11);
-        }
-        
-        
         
         this.auxiliar = this.objGestor.getTerminados().cabeza;
         while(this.auxiliar.siguiente.id != -1){

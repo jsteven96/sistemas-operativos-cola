@@ -53,11 +53,11 @@ public class Tabla implements Observador {
             Vector fila = new Vector();
             fila.add(this.auxiliar.id);
             fila.add(this.auxiliar.tiempoLlegada);
-            fila.add(this.auxiliar.rafaga);
-            fila.add(this.auxiliar.tiempoComienzo);
-            fila.add(this.auxiliar.tiempoFinal);
-            fila.add(this.auxiliar.tiempoRetorno);
-            fila.add(this.auxiliar.tiempoEspera);
+            fila.add(this.auxiliar.getRafagaEjecutada());
+            fila.add(this.auxiliar.gettComienzo());
+            fila.add(this.auxiliar.gettFinal());
+            fila.add(this.auxiliar.gettRetorno());
+            fila.add(this.auxiliar.gettEspera());
             fila.add(this.auxiliar.prioridad);
             this.model.addRow(fila);
         }

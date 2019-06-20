@@ -36,6 +36,7 @@ public class Nodo implements Cloneable {
     public ArrayList<Integer> tRetorno;
     public ArrayList<Integer> tEspera;
     
+    public int vecesBloqueado;
     
     public Nodo(){
         this.rafaga = (int) (1 + Math.random() * 7);
@@ -62,6 +63,8 @@ public class Nodo implements Cloneable {
         this.tFinal = new ArrayList();
         this.tRetorno = new ArrayList();
         this.tEspera = new ArrayList();
+        
+        this.vecesBloqueado = 0;
     }    
     
     public void setId(int id) {
@@ -207,6 +210,16 @@ public class Nodo implements Cloneable {
     public void setRafagaEjecutada(ArrayList<Integer> rafagaEjecutada) {
         this.rafagaEjecutada = rafagaEjecutada;
     }
+
+    public int getVecesBloqueado() {
+        return vecesBloqueado;
+    }
+
+    public void setVecesBloqueado(int vecesBloqueado) {
+        this.vecesBloqueado = vecesBloqueado;
+    }
+    
+    
     
     @Override
     public Nodo clone(){
@@ -230,7 +243,8 @@ public class Nodo implements Cloneable {
         clon.settFinal(tFinal);
         clon.settRetorno(tRetorno);
         clon.settEspera(tEspera);
-        
+        clon.setVecesBloqueado(vecesBloqueado);
+        clon.setRafagaParcial(rafagaParcial);
         return clon;
     }
     

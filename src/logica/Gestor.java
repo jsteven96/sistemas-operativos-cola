@@ -96,6 +96,11 @@ public class Gestor implements Observable, Runnable {
             copiaBloqueados = this.enEjecucion.clone();
             copiaBloqueados.bloqueado = true;
             copiaBloqueados.setIniBloq(this.tiempo);
+            copiaBloqueados.setVecesBloqueado(copiaBloqueados.getVecesBloqueado()+1);
+            copiaBloqueados.gettFinal().add(this.tiempo);
+            copiaBloqueados.getRafagaEjecutada().add(this.rafagaEjecutada);
+            copiaBloqueados.gettRetorno().add(copiaBloqueados.gettFinal().get(copiaBloqueados.gettFinal().size()-1)-copiaBloqueados.getTiempoLlegada());
+            copiaBloqueados.gettEspera().add(copiaBloqueados.gettRetorno().get(copiaBloqueados.gettRetorno().size()-1)-copiaBloqueados.getRafagaParcial());
             this.bloqueados.agregarNodo(copiaBloqueados);
             this.atendiendo = false;
             
@@ -118,23 +123,7 @@ public class Gestor implements Observable, Runnable {
         this.listos.agregarNodo(copia);
         
     }
-
-    public void agregarATerminados() {
-        Nodo copia;
-        copia = this.enEjecucion.clone();
-        copia.rafaga = this.rafagaEjecutada;
-        copia.tiempoComienzo = this.tiempo - this.rafagaEjecutada;
-        
-        copia.tiempoFinal = this.tiempo;
-        copia.setTiempoRetorno(copia.getTiempoFinal() - copia.getTiempoLlegada());
-        copia.setTiempoEspera(copia.getTiempoRetorno() - copia.getRafaga());
-        this.terminados.agregarNodo(copia);
-        notificarGantt();
-        notificarObservadores();
-        this.listos.eliminarNodo(copia.id);
-        notificarObservadores();
-    }
-
+    
     public void atender() {
         while (true) {
             try {
@@ -150,7 +139,7 @@ public class Gestor implements Observable, Runnable {
                 this.enEjecucion = this.listos.cabeza.siguiente.clone();
                 this.enEjecucion.listo = false;
                 this.enEjecucion.enEjecucion = true;
-                this.enEjecucion.setTiempoComienzo(this.tiempo);
+                this.enEjecucion.gettComienzo().add(this.tiempo);
                 if(this.enEjecucion.bloqueado == false){
                     dibujarTiempo();
                 }
@@ -165,15 +154,17 @@ public class Gestor implements Observable, Runnable {
                 if (this.enEjecucion.id != -1) {
                 this.enEjecucion.setRafaga(this.enEjecucion.getRafaga() - 1);
                 this.enEjecucion.setRafagaParcial(this.enEjecucion.getRafagaParcial() + 1);
+                this.rafagaEjecutada++;
                 actualizarTiempoEspera();
                 actualizarEstado();
                 notificarObservadores();
 
                 if (this.enEjecucion.rafaga == 0) {
                     Nodo copia = this.enEjecucion.clone();
-                    copia.setTiempoFinal(this.tiempo+1);
-                    copia.setRafaga(this.enEjecucion.getRafagaParcial());
-                    
+                    copia.gettFinal().add(this.tiempo+1);
+                    copia.getRafagaEjecutada().add(this.enEjecucion.getRafagaParcial());
+                    copia.gettRetorno().add(copia.gettFinal().get(copia.gettFinal().size()-1)-copia.getTiempoLlegada());
+                    copia.gettEspera().add(copia.gettRetorno().get(copia.gettRetorno().size()-1)-copia.getRafagaParcial());
                     this.terminados.agregarNodo(copia);
                     notificarObservadores();
                     this.atendiendo = false;
@@ -218,12 +209,6 @@ public class Gestor implements Observable, Runnable {
    }
    
    public void dibujarTiempoDeEspera(){
-       /*
-       if(this.enEjecucion.id != -1){
-            for(int i = this.enEjecucion.tiempoLlegada; i < this.enEjecucion.tiempoComienzo; i++){
-                this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(1);
-            }
-        }*/
        if(this.enEjecucion.id != -1){
             for(int i = 0; i < this.enEjecucion.tiempoEspera; i++){
                 this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(1);
@@ -237,12 +222,6 @@ public class Gestor implements Observable, Runnable {
             this.auxiliar = this.auxiliar.siguiente;
             this.auxiliar.setTiempoEspera(this.auxiliar.getTiempoEspera() + 1);
         }
-        /*
-        this.auxiliar = this.bloqueados.cabeza;
-        while(this.auxiliar.siguiente.id != -1){
-            this.auxiliar = this.auxiliar.siguiente;
-            this.auxiliar.setTiempoEspera(this.auxiliar.getTiempoEspera() + 1);
-        }*/
     }
     
     public void dibujarTiempoBloqueado(){
