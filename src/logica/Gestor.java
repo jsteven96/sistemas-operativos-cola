@@ -118,6 +118,7 @@ public class Gestor implements Observable, Runnable {
         copia.setFinBloq(this.tiempo);
         copia.setTiempoBloqueado(copia.finBloq-copia.iniBloq);
         copia.setTiempoEspera(0);
+        
         copia.setTiempoFinal(copia.tiempoComienzo + copia.rafagaParcial);
         
         this.bloqueados.eliminarNodo(copia.id);
@@ -133,6 +134,26 @@ public class Gestor implements Observable, Runnable {
                 Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
             }
             
+            
+                //------------Nuevo código para Round Robin
+                if(this.rafagaEjecutada == 4  && this.enEjecucion.rafaga>0){
+                    Nodo copia = this.enEjecucion.clone();
+                    this.enEjecucion.setId(-1);
+                    copia.bloqueado = true;
+                    copia.tiempoEspera = 0;
+                    copia.gettFinal().add(this.tiempo+1);
+                    copia.getRafagaEjecutada().add(this.rafagaEjecutada);
+                    copia.gettRetorno().add(copia.gettFinal().get(copia.gettFinal().size()-1)-copia.getTiempoLlegada());
+                    copia.gettEspera().add(copia.gettRetorno().get(copia.gettRetorno().size()-1)-copia.getRafagaParcial());
+                    
+                    this.listos.agregarNodo(copia);
+                    this.atendiendo = false;
+                    this.rafagaEjecutada = 0;
+                }
+                //------------
+            
+               
+            
             guardarProcesos();
             notificarGantt();
             //Si no hay nadie siendo atendido y el que sigue de la cabeza de listos no es la misma cabeza
@@ -146,6 +167,7 @@ public class Gestor implements Observable, Runnable {
                     dibujarTiempo();
                 }
                 dibujarTiempoBloqueado();
+                this.enEjecucion.setTiempoBloqueado(0);
                 dibujarTiempoDeEspera();
                 this.listos.eliminarNodo(this.enEjecucion.id);
                 this.atendiendo = true;
@@ -165,6 +187,7 @@ public class Gestor implements Observable, Runnable {
                 actualizarEstado();
                 notificarObservadores();
                 
+                /*
                 //------------Nuevo código para Round Robin
                 if(this.rafagaEjecutada == 4  && this.enEjecucion.rafaga>0){
                     Nodo copia = this.enEjecucion.clone();
@@ -182,10 +205,11 @@ public class Gestor implements Observable, Runnable {
                 }
                 //------------
             
-               
+               */
                 
                 if (this.enEjecucion.rafaga == 0) {
                     Nodo copia = this.enEjecucion.clone();
+                    this.enEjecucion.setId(-1);
                     copia.gettFinal().add(this.tiempo+1);
                     copia.getRafagaEjecutada().add(this.enEjecucion.getRafagaParcial());
                     copia.gettRetorno().add(copia.gettFinal().get(copia.gettFinal().size()-1)-copia.getTiempoLlegada());
@@ -194,7 +218,7 @@ public class Gestor implements Observable, Runnable {
                     notificarObservadores();
                     this.atendiendo = false;
                     this.rafagaEjecutada = 0;
-                    this.enEjecucion.setId(-1);
+                    
                 }
 
             }
