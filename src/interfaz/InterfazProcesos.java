@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package interfaz;
 
 import java.awt.*;
@@ -89,7 +90,7 @@ public class InterfazProcesos extends JFrame{
         btnDesbloquear.setFont(new Font("Verdana", Font.BOLD, 14));
         inicializar();
         //Creación del lienzo
-        
+        this.btnBloquear.setEnabled(false);
         miLienzo = new Lienzo(miGestor);
         miLienzo.setSize(400, 300);
         
@@ -98,10 +99,10 @@ public class InterfazProcesos extends JFrame{
         this.miTabla.dibujarProcesos();
         this.jScrollPanel = new JScrollPane();
         this.tblGantt = new JTable();
-        this.tblGantt.setSize(1000, 1000);
+        this.tblGantt.setSize(new Dimension(600, 900));
         this.tblGantt.setModel(this.miTabla.getModel());
         this.jScrollPanel.setViewportView(tblGantt);
-        
+        this.jScrollPanel.setPreferredSize(new Dimension(600, 200));
         
         //miDiagrama = new Diagrama(miGestor);
         this.miDiagramaPanel = new DiagramaPanel(miGestor);
@@ -173,6 +174,7 @@ public class InterfazProcesos extends JFrame{
     public void atenderProceso(){
         this.miLienzo.atender();
         this.btnAtender.setEnabled(false);
+        this.btnBloquear.setEnabled(true);
         
     }
     

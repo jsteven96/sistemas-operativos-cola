@@ -141,7 +141,7 @@ public class Gestor implements Observable, Runnable {
                     this.enEjecucion.setId(-1);
                     copia.bloqueado = true;
                     copia.tiempoEspera = 0;
-                    copia.gettFinal().add(this.tiempo+1);
+                    copia.gettFinal().add(this.tiempo);
                     copia.getRafagaEjecutada().add(this.rafagaEjecutada);
                     copia.gettRetorno().add(copia.gettFinal().get(copia.gettFinal().size()-1)-copia.getTiempoLlegada());
                     copia.gettEspera().add(copia.gettRetorno().get(copia.gettRetorno().size()-1)-copia.getRafagaParcial());
