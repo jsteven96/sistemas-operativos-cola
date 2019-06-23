@@ -15,7 +15,6 @@ import java.util.logging.Logger;
  *
  * @author root
  */
-
 public class Gestor implements Observable, Runnable {
 
     //private ColaPrioridad listos;
@@ -37,8 +36,7 @@ public class Gestor implements Observable, Runnable {
     public Gestor(Cola cola) {
         this.listos = cola;
         this.terminados = new Cola();
-        
-        this.retardo = 1000;
+        this.retardo = 2000;
         this.tiempo = 0;
         this.bloqueados = new Cola();
         this.observadores = new ArrayList();
@@ -66,7 +64,7 @@ public class Gestor implements Observable, Runnable {
         this.enEjecucion = enEjecucion;
     }
 
-    public Cola getTerminados() {
+    public synchronized Cola getTerminados() {
         return terminados;
     }
 
@@ -90,21 +88,25 @@ public class Gestor implements Observable, Runnable {
         this.bloqueados = bloqueados;
     }
 
+    public synchronized ArrayList<ArrayList> getEstado() {
+        return estado;
+    }
+
     public void bloquearProceso() {
-        
+
         Nodo copiaBloqueados;
         if (this.enEjecucion.getRafaga() != 0) {
             copiaBloqueados = this.enEjecucion.clone();
             copiaBloqueados.bloqueado = true;
             copiaBloqueados.setIniBloq(this.tiempo);
-            copiaBloqueados.setVecesBloqueado(copiaBloqueados.getVecesBloqueado()+1);
+            copiaBloqueados.setVecesBloqueado(copiaBloqueados.getVecesBloqueado() + 1);
             copiaBloqueados.gettFinal().add(this.tiempo);
             copiaBloqueados.getRafagaEjecutada().add(this.rafagaEjecutada);
-            copiaBloqueados.gettRetorno().add(copiaBloqueados.gettFinal().get(copiaBloqueados.gettFinal().size()-1)-copiaBloqueados.getTiempoLlegada());
-            copiaBloqueados.gettEspera().add(copiaBloqueados.gettRetorno().get(copiaBloqueados.gettRetorno().size()-1)-copiaBloqueados.getRafagaParcial());
+            copiaBloqueados.gettRetorno().add(copiaBloqueados.gettFinal().get(copiaBloqueados.gettFinal().size() - 1) - copiaBloqueados.getTiempoLlegada());
+            copiaBloqueados.gettEspera().add(copiaBloqueados.gettRetorno().get(copiaBloqueados.gettRetorno().size() - 1) - copiaBloqueados.getRafagaParcial());
             this.bloqueados.agregarNodo(copiaBloqueados);
             this.atendiendo = false;
-            
+
             this.rafagaEjecutada = 0;
             notificarGantt();
         }
@@ -113,19 +115,19 @@ public class Gestor implements Observable, Runnable {
     public void desbloquearProceso() {
         Nodo copia;
         copia = this.getBloqueados().cabeza.siguiente.clone();
-        
+
         copia.setTiempoComienzo(this.tiempo);
         copia.setFinBloq(this.tiempo);
-        copia.setTiempoBloqueado(copia.finBloq-copia.iniBloq);
+        copia.setTiempoBloqueado(copia.finBloq - copia.iniBloq);
         copia.setTiempoEspera(0);
-        
+
         copia.setTiempoFinal(copia.tiempoComienzo + copia.rafagaParcial);
-        
+
         this.bloqueados.eliminarNodo(copia.id);
         this.listos.agregarNodo(copia);
-        
+
     }
-    
+
     public void atender() {
         while (true) {
             try {
@@ -133,27 +135,6 @@ public class Gestor implements Observable, Runnable {
             } catch (InterruptedException ex) {
                 Logger.getLogger(Gestor.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            
-                //------------Nuevo código para Round Robin
-                if(this.rafagaEjecutada == 4  && this.enEjecucion.rafaga>0){
-                    Nodo copia = this.enEjecucion.clone();
-                    this.enEjecucion.setId(-1);
-                    copia.bloqueado = true;
-                    copia.tiempoEspera = 0;
-                    copia.gettFinal().add(this.tiempo);
-                    copia.getRafagaEjecutada().add(this.rafagaEjecutada);
-                    copia.gettRetorno().add(copia.gettFinal().get(copia.gettFinal().size()-1)-copia.getTiempoLlegada());
-                    copia.gettEspera().add(copia.gettRetorno().get(copia.gettRetorno().size()-1)-copia.getRafagaParcial());
-                    
-                    this.listos.agregarNodo(copia);
-                    this.atendiendo = false;
-                    this.rafagaEjecutada = 0;
-                }
-                //------------
-            
-               
-            
             guardarProcesos();
             notificarGantt();
             //Si no hay nadie siendo atendido y el que sigue de la cabeza de listos no es la misma cabeza
@@ -163,7 +144,7 @@ public class Gestor implements Observable, Runnable {
                 this.enEjecucion.listo = false;
                 this.enEjecucion.enEjecucion = true;
                 this.enEjecucion.gettComienzo().add(this.tiempo);
-                if(this.enEjecucion.bloqueado == false){
+                if (this.enEjecucion.bloqueado == false) {
                     dibujarTiempo();
                 }
                 dibujarTiempoBloqueado();
@@ -171,117 +152,141 @@ public class Gestor implements Observable, Runnable {
                 dibujarTiempoDeEspera();
                 this.listos.eliminarNodo(this.enEjecucion.id);
                 this.atendiendo = true;
-                notificarObservadores();
+                //notificarObservadores();
+                notificarLienzo();
             }
-            
-           
-            
-            //Si hay alguien en atención, disminuya la rafaga en uno y aumente la rafaga ejecutada general
-            
-            if(this.atendiendo == true){
-                if (this.enEjecucion.id != -1) {
-                this.enEjecucion.setRafaga(this.enEjecucion.getRafaga() - 1);
-                this.enEjecucion.setRafagaParcial(this.enEjecucion.getRafagaParcial() + 1);
-                this.rafagaEjecutada++;
-                actualizarTiempoEspera();
-                actualizarEstado();
-                notificarObservadores();
-                
-                /*
-                //------------Nuevo código para Round Robin
-                if(this.rafagaEjecutada == 4  && this.enEjecucion.rafaga>0){
-                    Nodo copia = this.enEjecucion.clone();
-                    this.enEjecucion.setId(-1);
-                    copia.bloqueado = true;
-                    copia.tiempoEspera = 0;
-                    copia.gettFinal().add(this.tiempo+1);
-                    copia.getRafagaEjecutada().add(this.rafagaEjecutada);
-                    copia.gettRetorno().add(copia.gettFinal().get(copia.gettFinal().size()-1)-copia.getTiempoLlegada());
-                    copia.gettEspera().add(copia.gettRetorno().get(copia.gettRetorno().size()-1)-copia.getRafagaParcial());
-                    
-                    this.listos.agregarNodo(copia);
-                    this.atendiendo = false;
-                    this.rafagaEjecutada = 0;
-                }
-                //------------
-            
-               */
-                
-                if (this.enEjecucion.rafaga == 0) {
-                    Nodo copia = this.enEjecucion.clone();
-                    this.enEjecucion.setId(-1);
-                    copia.gettFinal().add(this.tiempo+1);
-                    copia.getRafagaEjecutada().add(this.enEjecucion.getRafagaParcial());
-                    copia.gettRetorno().add(copia.gettFinal().get(copia.gettFinal().size()-1)-copia.getTiempoLlegada());
-                    copia.gettEspera().add(copia.gettRetorno().get(copia.gettRetorno().size()-1)-copia.getRafagaParcial());
-                    this.terminados.agregarNodo(copia);
-                    notificarObservadores();
-                    this.atendiendo = false;
-                    this.rafagaEjecutada = 0;
-                    
-                }
 
-            }
+            //Si hay alguien en atención, disminuya la rafaga en uno y aumente la rafaga ejecutada general
+            if (this.atendiendo == true) {
+                if (this.enEjecucion.id != -1) {
+                    //------Nuevo código para SRTF
+                    this.auxiliar = this.listos.cabeza;
+                    
+                    while (this.auxiliar.siguiente.id != -1) {
+                        this.auxiliar = this.auxiliar.siguiente;
+                        if (this.auxiliar.rafaga < this.enEjecucion.rafaga) {
+                            Nodo copia = this.enEjecucion.clone();
+                            copia.bloqueado = true;
+                            copia.tiempoEspera = 0;
+                            copia.gettFinal().add(this.tiempo);
+                            copia.getRafagaEjecutada().add(this.rafagaEjecutada);
+                            copia.gettRetorno().add(copia.gettFinal().get(copia.gettFinal().size() - 1) - copia.getTiempoLlegada());
+                            copia.gettEspera().add(copia.gettRetorno().get(copia.gettRetorno().size() - 1) - copia.getRafagaParcial());
+                            this.listos.agregarNodo(copia);
+                            this.enEjecucion = this.auxiliar.clone();
+                            this.enEjecucion.listo = false;
+                            this.enEjecucion.enEjecucion = true;
+                            this.enEjecucion.gettComienzo().add(this.tiempo);
+                            if (this.enEjecucion.bloqueado == false) {
+                                dibujarTiempo();
+                            }
+                            dibujarTiempoBloqueado();
+                            this.enEjecucion.setTiempoBloqueado(0);
+                            dibujarTiempoDeEspera();
+                            this.listos.eliminarNodo(this.auxiliar.id);
+                            break;
+                        }
+                    }
+                    
+                    
+                    
+                    //------------------------------
+                    
+                    
+                    
+                    
+                    
+                    
+                    this.enEjecucion.setRafaga(this.enEjecucion.getRafaga() - 1);
+                    this.enEjecucion.setRafagaParcial(this.enEjecucion.getRafagaParcial() + 1);
+                    this.rafagaEjecutada++;
+                    actualizarTiempoEspera();
+                    actualizarEstado();
+                    //notificarObservadores();
+                    notificarLienzo();
+                    
+                    if (this.enEjecucion.rafaga == 0) {
+                        Nodo copia = this.enEjecucion.clone();
+                        this.enEjecucion.setId(-1);
+                        copia.gettFinal().add(this.tiempo + 1);
+                        copia.getRafagaEjecutada().add(this.enEjecucion.getRafagaParcial());
+                        copia.gettRetorno().add(copia.gettFinal().get(copia.gettFinal().size() - 1) - copia.getTiempoLlegada());
+                        copia.gettEspera().add(copia.gettRetorno().get(copia.gettRetorno().size() - 1) - copia.getRafagaParcial());
+                        this.terminados.agregarNodo(copia);
+                        //notificarObservadores();
+                        notificarLienzo();
+                        notificarTabla();
+                        this.atendiendo = false;
+                        this.rafagaEjecutada = 0;
+
+                    }
+
+                }
             }
             this.setTiempo(this.getTiempo() + 1);
             encolarProgramados();
-            
-            notificarObservadores();
+            //notificarObservadores();
+            notificarLienzo();
         }
     }
 
-    public void guardarProcesos(){
+    public void guardarProcesos() {
         this.auxiliar = this.getListos().cabeza;
-        while(this.auxiliar.siguiente.id != -1){
+        while (this.auxiliar.siguiente.id != -1) {
             this.auxiliar = this.auxiliar.siguiente;
-            if(!this.procesos.contains(this.auxiliar.id)){
-             this.procesos.add(this.auxiliar.id);
-             ArrayList proceso  = new ArrayList();
-             proceso.add(this.auxiliar.id);
-             this.estado.add(proceso);
+            if (!this.procesos.contains(this.auxiliar.id)) {
+                this.procesos.add(this.auxiliar.id);
+                ArrayList proceso = new ArrayList();
+                proceso.add(this.auxiliar.id);
+                this.getEstado().add(proceso);
+                
             }
         }
-        
+
     }
-    
-    public void actualizarEstado(){
-        if(this.enEjecucion.id != -1){
-            this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(2);
+
+    public void actualizarEstado() {
+        if (this.enEjecucion.id != -1) {
+            //this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(2);
+            this.getEstado().get(this.procesos.indexOf(this.enEjecucion.id)).add(2);
+                    
         }
     }
-    
-   public void dibujarTiempo(){
-       if(this.enEjecucion.id != -1){
-            for(int i = 0; i < this.enEjecucion.tiempoLlegada; i++){
-                this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(0);
+
+    public void dibujarTiempo() {
+        if (this.enEjecucion.id != -1) {
+            for (int i = 0; i < this.enEjecucion.tiempoLlegada; i++) {
+                //this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(0);
+                this.getEstado().get(this.procesos.indexOf(this.enEjecucion.id)).add(0);
             }
         }
-   }
-   
-   public void dibujarTiempoDeEspera(){
-       if(this.enEjecucion.id != -1){
-            for(int i = 0; i < this.enEjecucion.tiempoEspera; i++){
-                this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(1);
+    }
+
+    public void dibujarTiempoDeEspera() {
+        if (this.enEjecucion.id != -1) {
+            for (int i = 0; i < this.enEjecucion.tiempoEspera; i++) {
+                //this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(1);
+                this.getEstado().get(this.procesos.indexOf(this.enEjecucion.id)).add(1);
             }
         }
-   }
-    
-    public void actualizarTiempoEspera(){
+    }
+
+    public void actualizarTiempoEspera() {
         this.auxiliar = this.listos.cabeza;
-        while(this.auxiliar.siguiente.id != -1){
+        while (this.auxiliar.siguiente.id != -1) {
             this.auxiliar = this.auxiliar.siguiente;
             this.auxiliar.setTiempoEspera(this.auxiliar.getTiempoEspera() + 1);
         }
     }
-    
-    public void dibujarTiempoBloqueado(){
-         if(this.enEjecucion.id != -1){
-            for(int i = 0; i < this.enEjecucion.tiempoBloqueado; i++){
-                this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(3);
+
+    public void dibujarTiempoBloqueado() {
+        if (this.enEjecucion.id != -1) {
+            for (int i = 0; i < this.enEjecucion.tiempoBloqueado; i++) {
+                //this.estado.get(this.procesos.indexOf(this.enEjecucion.id)).add(3);
+                this.getEstado().get(this.procesos.indexOf(this.enEjecucion.id)).add(3);
             }
         }
     }
-    
 
     public void agregarNodo() {
         ordenarNodosProgramados();
@@ -307,6 +312,7 @@ public class Gestor implements Observable, Runnable {
 
     @Override
     public void notificarObservadores() {
+        
         for (int i = 0; i < this.observadores.size() - 1; i++) {
             Observador observador = (Observador) this.observadores.get(i);
             observador.actualizarDatos(this);
@@ -317,7 +323,16 @@ public class Gestor implements Observable, Runnable {
         Observador gantt = (Observador) this.observadores.get(2);
         gantt.actualizarDatos(this);
     }
-
+    
+    public void notificarTabla(){
+        Observador tabla = (Observador) this.observadores.get(1);
+        tabla.actualizarDatos(this);
+    }
+    
+    public void notificarLienzo(){
+        Observador li = (Observador) this.observadores.get(0);
+        li.actualizarDatos(this);
+    }
     @Override
     public void registrar(Observador obs) {
         this.observadores.add(obs);

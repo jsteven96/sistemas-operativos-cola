@@ -65,34 +65,34 @@ public class PanelGantt extends JPanel implements Observador {
         g.setFont(new Font("Verdana", Font.PLAIN, 13));
         g.setColor(Color.BLACK);
         
-        for(int i = 0; i < this.objGestor.estado.size(); i++){
-                g.drawString(this.objGestor.estado.get(i).get(0)+"", 10, y1+20);
+        for(int i = 0; i < this.objGestor.getEstado().size(); i++){
+                g.drawString(this.objGestor.getEstado().get(i).get(0)+"", 10, y1+20);
             y1 += 22;
         }
         
         y1 = 40;
         
-        for(int i = 0; i < this.objGestor.estado.size(); i++){
-            for(int j = 1; j < this.objGestor.estado.get(i).size(); j++){
+        for(int i = 0; i < this.objGestor.getEstado().size(); i++){
+            for(int j = 1; j < this.objGestor.getEstado().get(i).size(); j++){
                 
-                if(this.objGestor.estado.get(i).get(j).equals(0)){
+                if(this.objGestor.getEstado().get(i).get(j).equals(0)){
                     g.setColor(Color.LIGHT_GRAY);
-                    g.drawRect(x1,y1, 18, 18);
+                    g.drawRect(x1,y1, 28, 18);
                 }
-                if(this.objGestor.estado.get(i).get(j).equals(1)){
+                if(this.objGestor.getEstado().get(i).get(j).equals(1)){
                     g.setColor(Color.LIGHT_GRAY);
-                    g.fillRect(x1,y1, 20, 20);
+                    g.fillRect(x1,y1, 30, 20);
                 }
-                if(this.objGestor.estado.get(i).get(j).equals(2)){
+                if(this.objGestor.getEstado().get(i).get(j).equals(2)){
                     int s =(Integer) this.objGestor.estado.get(i).get(0);
                     g.setColor(new Color(s * 102 % 255, s * 75 % 255, s * 32 % 255));
-                    g.fillRect(x1,y1, 20, 20);
+                    g.fillRect(x1,y1, 30, 20);
                 }
-                if(this.objGestor.estado.get(i).get(j).equals(3)){
+                if(this.objGestor.getEstado().get(i).get(j).equals(3)){
                     g.setColor(Color.RED);
-                    g.fillRect(x1,y1, 20, 20);
+                    g.fillRect(x1,y1, 30, 20);
                 }
-               x1+=21;
+               x1+=31;
             }
             x1 = 40;
             y1 += 22;
@@ -111,44 +111,11 @@ public class PanelGantt extends JPanel implements Observador {
 
             for (int i = 0; i <= col; i++) {
                 g.setColor(Color.LIGHT_GRAY);
-                g.drawRect((i * 21) + x1, 0, 20, 20);
+                g.drawRect((i * 31) + x1, 0, 30, 20);
                 g.setColor(Color.BLACK);
-                g.drawString(" " + Integer.toString(i), (i * 21) + x1, 11);
+                g.drawString(" " + Integer.toString(i), (i * 31) + x1, 11);
             }
         }
-
-        
-        /*
-        
-        this.auxiliar = this.objGestor.getTerminados().cabeza;
-        while(this.auxiliar.siguiente.id != -1){
-            cont = 0;
-            col = 0;
-            this.auxiliar = this.auxiliar.siguiente;
-            g.setColor(Color.BLACK);
-            g.drawString(Integer.toString(this.auxiliar.id), 0, y+13);
-            for(int i = this.auxiliar.tiempoLlegada; i < this.auxiliar.getTiempoFinal(); i++){
-                 if(i >= this.auxiliar.iniBloqueado && i <= this.auxiliar.finBloqueado){
-                        g.setColor(Color.red);
-                        g.fillRect(21*i+x, y, 20, 20);
-                    }
-                if(i < this.auxiliar.tiempoComienzo){
-                    g.setColor(Color.BLACK);
-                    g.setColor(Color.LIGHT_GRAY);
-                    g.fillRect(21*i+x, y, 20, 20);
-                    cont++;  
-                }else{
-                    g.setColor(Color.BLACK);
-                    //g.drawString(Integer.toString(col), 21*i+x, 10);
-                    int s= this.auxiliar.id % 1000;
-                    
-                    g.setColor(new Color(s * 102 % 255, s * 75 % 255, s * 32 % 255));
-                    g.fillRect(21*i+x, y, 20, 20);
-                    cont++; 
-                }
-            }
-            y += 24;
-        }*/
     }
     
     public void limpiar(Graphics g){

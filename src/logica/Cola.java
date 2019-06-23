@@ -24,19 +24,22 @@ public class Cola {
     }
     
     public void agregarNodo(Nodo nodo){
-        auxiliar = cabeza;
-        
-        while(auxiliar.siguiente.id != -1){
-            auxiliar = auxiliar.siguiente;    
+        this.auxiliar = this.cabeza;
+        boolean encontrado = false;
+        while(this.auxiliar.siguiente.id!= -1 &&(!encontrado)){
+            if(this.auxiliar.siguiente.rafaga>nodo.rafaga){
+                encontrado = true;
+            }else{
+                this.auxiliar = this.auxiliar.siguiente;
+            }
         }
         
-        if(nodo.id == -2){
+        if (nodo.id == -2) {
             nodo.setId(this.ultimo);
             this.ultimo++;
         }
-        nodo.siguiente = auxiliar.siguiente;
-        auxiliar.siguiente = nodo;
-        
+        nodo.siguiente = this.auxiliar.siguiente;
+        this.auxiliar.siguiente = nodo;
     }
     
     public void eliminarNodo(int id){

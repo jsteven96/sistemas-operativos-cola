@@ -27,7 +27,7 @@ public class DiagramaPanel extends JFrame{
         super("Diagrama de Gantt");
         this.objGestor = inpObjGestor;
         this.miPanel = new PanelGantt(this.objGestor);
-        this.miPanel.setPreferredSize(new Dimension(4000,2000));
+        this.miPanel.setPreferredSize(new Dimension(5000,2000));
        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.jsp = new JScrollPane();

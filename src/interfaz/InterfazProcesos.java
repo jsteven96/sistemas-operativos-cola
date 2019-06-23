@@ -104,7 +104,7 @@ public class InterfazProcesos extends JFrame{
         this.jScrollPanel.setViewportView(tblGantt);
         this.jScrollPanel.setPreferredSize(new Dimension(600, 200));
         
-        //miDiagrama = new Diagrama(miGestor);
+        
         this.miDiagramaPanel = new DiagramaPanel(miGestor);
         
         
@@ -166,8 +166,6 @@ public class InterfazProcesos extends JFrame{
         if(!"".equals(taIdEliminar.getText())){
             this.miLienzo.eliminarNodo(Integer.parseInt(taIdEliminar.getText()));
             this.miTabla.dibujarProcesos();
-            //this.miDiagrama.dibujarProcesos();
-           
         }
     }
     
