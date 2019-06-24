@@ -97,6 +97,7 @@ public class Gestor implements Observable, Runnable {
         Nodo copiaBloqueados;
         if (this.enEjecucion.getRafaga() != 0) {
             copiaBloqueados = this.enEjecucion.clone();
+
             copiaBloqueados.bloqueado = true;
             copiaBloqueados.setIniBloq(this.tiempo);
             copiaBloqueados.setVecesBloqueado(copiaBloqueados.getVecesBloqueado() + 1);
@@ -161,7 +162,7 @@ public class Gestor implements Observable, Runnable {
                 if (this.enEjecucion.id != -1) {
                     //------Nuevo código para SRTF
                     this.auxiliar = this.listos.cabeza;
-                    
+
                     while (this.auxiliar.siguiente.id != -1) {
                         this.auxiliar = this.auxiliar.siguiente;
                         if (this.auxiliar.rafaga < this.enEjecucion.rafaga) {
@@ -184,17 +185,38 @@ public class Gestor implements Observable, Runnable {
                             this.enEjecucion.setTiempoBloqueado(0);
                             dibujarTiempoDeEspera();
                             this.listos.eliminarNodo(this.auxiliar.id);
+
                             break;
+
+                            //Codigo nuevo
+                        } else {
+                            if (this.auxiliar.rafaga == this.enEjecucion.rafaga && this.auxiliar.tiempoLlegada < this.enEjecucion.tiempoLlegada) {
+                                Nodo copia = this.enEjecucion.clone();
+                                copia.bloqueado = true;
+                                copia.tiempoEspera = 0;
+                                copia.gettFinal().add(this.tiempo);
+                                copia.getRafagaEjecutada().add(this.rafagaEjecutada);
+                                copia.gettRetorno().add(copia.gettFinal().get(copia.gettFinal().size() - 1) - copia.getTiempoLlegada());
+                                copia.gettEspera().add(copia.gettRetorno().get(copia.gettRetorno().size() - 1) - copia.getRafagaParcial());
+                                this.listos.agregarNodo(copia);
+                                this.enEjecucion = this.auxiliar.clone();
+                                this.enEjecucion.listo = false;
+                                this.enEjecucion.enEjecucion = true;
+                                this.enEjecucion.gettComienzo().add(this.tiempo);
+                                if (this.enEjecucion.bloqueado == false) {
+                                    dibujarTiempo();
+                                }
+                                dibujarTiempoBloqueado();
+                                this.enEjecucion.setTiempoBloqueado(0);
+                                dibujarTiempoDeEspera();
+                                this.listos.eliminarNodo(this.auxiliar.id);
+
+                                break;
+                            }
                         }
+                        //---------------------
                     }
-                    
-                    
-                    
                     //------------------------------
-                    
-                    
-                    
-                    
                     
                     
                     this.enEjecucion.setRafaga(this.enEjecucion.getRafaga() - 1);
