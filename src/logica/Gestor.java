@@ -36,7 +36,7 @@ public class Gestor implements Observable, Runnable {
     public Gestor(Cola cola) {
         this.listos = cola;
         this.terminados = new Cola();
-        this.retardo = 2000;
+        this.retardo = 1000;
         this.tiempo = 0;
         this.bloqueados = new Cola();
         this.observadores = new ArrayList();
@@ -95,7 +95,7 @@ public class Gestor implements Observable, Runnable {
     public void bloquearProceso() {
 
         Nodo copiaBloqueados;
-        if (this.enEjecucion.getRafaga() != 0) {
+        if (this.enEjecucion.getRafaga() != 0 || this.enEjecucion.id != -1) {
             copiaBloqueados = this.enEjecucion.clone();
 
             copiaBloqueados.bloqueado = true;
@@ -115,18 +115,20 @@ public class Gestor implements Observable, Runnable {
 
     public void desbloquearProceso() {
         Nodo copia;
-        copia = this.getBloqueados().cabeza.siguiente.clone();
+        if (this.getBloqueados().cabeza.siguiente.id != -1) {
+            copia = this.getBloqueados().cabeza.siguiente.clone();
 
-        copia.setTiempoComienzo(this.tiempo);
-        copia.setFinBloq(this.tiempo);
-        copia.setTiempoBloqueado(copia.finBloq - copia.iniBloq);
-        copia.setTiempoEspera(0);
+            copia.setTiempoComienzo(this.tiempo);
+            copia.setFinBloq(this.tiempo);
+            copia.setTiempoBloqueado(copia.finBloq - copia.iniBloq);
+            copia.setTiempoEspera(0);
 
-        copia.setTiempoFinal(copia.tiempoComienzo + copia.rafagaParcial);
+            copia.setTiempoFinal(copia.tiempoComienzo + copia.rafagaParcial);
 
-        this.bloqueados.eliminarNodo(copia.id);
-        this.listos.agregarNodo(copia);
+            this.bloqueados.eliminarNodo(copia.id);
+            this.listos.agregarNodo(copia);
 
+        }
     }
 
     public void atender() {
