@@ -7,14 +7,12 @@
 package interfaz;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Vector;
 import javax.swing.*;
 import javax.swing.UIManager;
 import logica.Cola;
-import logica.ColaPrioridad;
 import logica.Gestor;
-import logica.Nodo;
+import logica.GestorPr;
+import logica.GestorRR;
 
 /**
  *
@@ -43,6 +41,8 @@ public class InterfazProcesos extends JFrame{
     //private ColaPrioridad miCola;
     private Cola miCola;
     private Gestor miGestor;
+    private GestorPr miGestorPr;
+    private GestorRR miGestorRR;
     private Tabla miTabla;
     private JTable tblGantt;
     private JScrollPane jScrollPanel;
