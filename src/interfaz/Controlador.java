@@ -27,7 +27,7 @@ public class Controlador implements ActionListener {
         if(e.getActionCommand().equals(InterfazProcesos.SALIR)){
             System.exit(0);
         }
-        if(e.getActionCommand().equals(InterfazProcesos.AGREGAR_PROCESOS)){
+        if(e.getActionCommand().equals(InterfazProcesos.AGREGAR_PROCESOS_R)){
             objInterfaz.agregarProceso();
         }
         if(e.getActionCommand().equals(InterfazProcesos.ELIMINAR_PROCESOS)){
@@ -42,6 +42,12 @@ public class Controlador implements ActionListener {
         }
         if(e.getActionCommand().equals(InterfazProcesos.DESBLOQUEAR_PROCESO)){
             objInterfaz.desbloquearProceso();
+        }
+        if(e.getActionCommand().equals(InterfazProcesos.AGREGAR_PROCESOS_P)){
+            objInterfaz.agregarProcesoP();
+        }
+        if(e.getActionCommand().equals(InterfazProcesos.AGREGAR_PROCESOS_F)){
+            objInterfaz.agregarProcesoF();
         }
     }
     

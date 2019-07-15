@@ -28,20 +28,32 @@ public class InterfazProcesos extends JFrame{
     private JTextArea taNumCrear;
     private JTextArea taIdEliminar;
     private JButton btnEliminar;
-    private JButton btnAgregar;
+    private JButton btnAgregarR;
+    private JButton btnAgregarP;
+    private JButton btnAgregarF;
+    
     private JButton btnAtender;
     private JButton btnBloquear;
     private JButton btnDesbloquear;
     private JButton btnSalir;
-    public static final String AGREGAR_PROCESOS = "Agregar procesos";
+    public static final String AGREGAR_PROCESOS_R = "Agregar a RoundRobin";
+    public static final String AGREGAR_PROCESOS_P = "Agregar a Prioridad";
+    public static final String AGREGAR_PROCESOS_F = "Agregar a FIFO";
+            
     public static final String ELIMINAR_PROCESOS = "Eliminar procesos";
     public static final String ATENDER_PROCESOS = "Atender procesos";
     public static final String BLOQUEAR_PROCESO = "Bloquear proceso";
     public static final String DESBLOQUEAR_PROCESO = "Desbloquear proceso";
     public static final String SALIR = "Salir";
     private Lienzo miLienzo;
-    //private ColaPrioridad miCola;
+    
+    //Inicialización de las colas
+    private ColaPrioridad miColaPrioridad;
     private Cola miCola;
+    private Cola miColaRound;
+    
+    
+    
     private Gestor miGestor;
     private Tabla miTabla;
     private JTable tblGantt;
@@ -49,7 +61,7 @@ public class InterfazProcesos extends JFrame{
     private DiagramaPanel miDiagramaPanel;
 
     public InterfazProcesos() throws Exception{
-        super("Ejercicio cola de Procesos");
+        super("Ejercicio Multicolas retroalimentadas");
       
         //Creación de controles
         this.pnlBotones = new JPanel();
@@ -70,20 +82,30 @@ public class InterfazProcesos extends JFrame{
         
         //Creación de botones
         btnEliminar = new JButton(InterfazProcesos.ELIMINAR_PROCESOS);
-        btnAgregar = new JButton(InterfazProcesos.AGREGAR_PROCESOS);
+        btnAgregarR = new JButton(InterfazProcesos.AGREGAR_PROCESOS_R);
+        btnAgregarP = new JButton(InterfazProcesos.AGREGAR_PROCESOS_P);
+        btnAgregarF = new JButton(InterfazProcesos.AGREGAR_PROCESOS_F);
+        
         btnAtender = new JButton(InterfazProcesos.ATENDER_PROCESOS);
         btnBloquear = new JButton(InterfazProcesos.BLOQUEAR_PROCESO);
         btnDesbloquear = new JButton(InterfazProcesos.DESBLOQUEAR_PROCESO);
         btnSalir = new JButton(InterfazProcesos.SALIR);
         Controlador objControlador = new Controlador(this);
         btnEliminar.addActionListener(objControlador);
-        btnAgregar.addActionListener(objControlador);
+        btnAgregarR.addActionListener(objControlador);
+        btnAgregarR.setFont(new Font("Verdana", Font.BOLD, 14));
+        btnAgregarP.addActionListener(objControlador);
+        btnAgregarP.setFont(new Font("Verdana", Font.BOLD, 14));
+        btnAgregarF.addActionListener(objControlador);
+        btnAgregarF.setFont(new Font("Verdana", Font.BOLD, 14));
+        
+        
         btnSalir.addActionListener(objControlador);
         btnAtender.addActionListener(objControlador);
         btnBloquear.addActionListener(objControlador);
         btnDesbloquear.addActionListener(objControlador);
         btnEliminar.setFont(new Font("Verdana", Font.BOLD, 14));
-        btnAgregar.setFont(new Font("Verdana", Font.BOLD, 14));
+        btnAgregarR.setFont(new Font("Verdana", Font.BOLD, 14));
         btnSalir.setFont(new Font("Verdana", Font.BOLD, 14));
         btnAtender.setFont(new Font("Verdana", Font.BOLD, 14));
         btnBloquear.setFont(new Font("Verdana", Font.BOLD, 14));
@@ -92,7 +114,7 @@ public class InterfazProcesos extends JFrame{
         //Creación del lienzo
         this.btnBloquear.setEnabled(false);
         miLienzo = new Lienzo(miGestor);
-        miLienzo.setSize(400, 300);
+        miLienzo.setSize(450, 650);
         
         //Creación del diagrama de Gantt
         miTabla = new Tabla(miGestor);
@@ -109,13 +131,16 @@ public class InterfazProcesos extends JFrame{
         
         
         //Distribución de cada elemento en un panel particular
-        this.pnlBotones.setLayout(new BoxLayout(this.pnlBotones, BoxLayout.Y_AXIS));
-        this.pnlBotones.add(btnAgregar);
-        this.pnlBotones.add(this.lblEliminar);
+        this.pnlBotones.setLayout(new BoxLayout(this.pnlBotones, BoxLayout.PAGE_AXIS));
+        this.pnlBotones.add(btnAgregarR);
         
-        this.pnlBotones.add(this.taIdEliminar);
+        //this.pnlBotones.add(this.lblEliminar);
         
-        this.pnlBotones.add(this.btnEliminar);
+        //this.pnlBotones.add(this.taIdEliminar);
+        
+        //this.pnlBotones.add(this.btnEliminar);
+        this.pnlBotones.add(this.btnAgregarP);
+        this.pnlBotones.add(this.btnAgregarF);
         this.pnlBotones.add(this.btnAtender);
         this.pnlBotones.add(this.btnBloquear);
         this.pnlBotones.add(this.btnDesbloquear);
@@ -149,11 +174,12 @@ public class InterfazProcesos extends JFrame{
     
     public void inicializar(){
         this.miCola = new Cola();
-        this.miGestor = new Gestor(miCola);
+        this.miColaPrioridad = new ColaPrioridad();
+        this.miColaRound = new Cola();
+        this.miGestor = new Gestor(miCola, this.miColaPrioridad, this.miColaRound);
         this.miGestor.agregarNodo();
         this.miGestor.agregarNodo();
-        this.miGestor.agregarNodo();
-        
+        this.miGestor.agregarNodo();   
     }
 
     public void agregarProceso() {
@@ -182,5 +208,13 @@ public class InterfazProcesos extends JFrame{
     
     public void desbloquearProceso(){
         this.miLienzo.desbloquearProceso();
+    }
+    
+    public void agregarProcesoP(){
+        this.miLienzo.agregarNodoP();
+    }
+    
+    public void agregarProcesoF(){
+        this.miLienzo.agregarNodoF();
     }
 }
