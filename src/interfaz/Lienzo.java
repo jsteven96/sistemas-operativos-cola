@@ -81,6 +81,7 @@ public class Lienzo extends Canvas implements Observador {
                 g.drawString("Id: " + Integer.toString(this.objGestor.getEnEjecucion().id), 5, y + 42);
                 g.setColor(Color.RED);
                 g.drawString("R: " + Integer.toString(this.objGestor.getEnEjecucion().getRafaga()), 5, y + 53);
+                g.drawString("V: "+ Integer.toString(this.objGestor.getEnEjecucion().getVida()), 5, y+64);
             }
 
         }
@@ -93,6 +94,7 @@ public class Lienzo extends Canvas implements Observador {
             g.setColor(new Color(i * 102 % 255, i * 75 % 255, i * 32 % 255));
             g.fillRect(x, y, 20, 20);
             g.setColor(Color.DARK_GRAY);
+            
             g.drawString("Id " + Integer.toString(this.auxiliar.id), x, y + 42);
             g.drawString("TL " + Integer.toString(this.auxiliar.tiempoLlegada), x, y + 53);
             g.setColor(Color.RED);
@@ -114,6 +116,8 @@ public class Lienzo extends Canvas implements Observador {
             g.setColor(new Color(i * 102 % 255, i * 75 % 255, i * 32 % 255));
             g.fillRect(x, yP, 20, 20);
             g.setColor(Color.DARK_GRAY);
+            
+            g.drawString("V "+ Integer.toString(this.auxiliar.getVida()), x, yP+32);
             g.drawString("Id " + Integer.toString(this.auxiliar.id), x, yP + 42);
             g.drawString("TL " + Integer.toString(this.auxiliar.tiempoLlegada), x, yP + 53);
             g.setColor(Color.RED);
@@ -133,6 +137,7 @@ public class Lienzo extends Canvas implements Observador {
             g.setColor(new Color(i * 102 % 255, i * 75 % 255, i * 32 % 255));
             g.fillRect(x, yF, 20, 20);
             g.setColor(Color.DARK_GRAY);
+            g.drawString("V "+ Integer.toString(this.auxiliar.getVida()), x, yF+32);
             g.drawString("Id " + Integer.toString(this.auxiliar.id), x, yF + 42);
             g.drawString("TL " + Integer.toString(this.auxiliar.tiempoLlegada), x, yF + 53);
             g.setColor(Color.RED);

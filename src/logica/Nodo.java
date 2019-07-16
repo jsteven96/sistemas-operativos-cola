@@ -40,6 +40,9 @@ public class Nodo implements Cloneable {
     
     //Nuevo atributo para saber la cola en la que está
     public int cola;
+    
+    //Nuevo atributo para establecer un ciclo de vida
+    public int vida;
     public Nodo(){
         this.rafaga = (int) (1 + Math.random() * 7);
         //this.siguiente = null;
@@ -69,6 +72,8 @@ public class Nodo implements Cloneable {
         this.vecesBloqueado = 0;
         
         this.cola = 0;
+        
+        this.vida = (int) (7 + Math.random() * 12);
     }    
     
     public void setId(int id) {
@@ -236,6 +241,16 @@ public class Nodo implements Cloneable {
     public void setCola(int cola) {
         this.cola = cola;
     }
+
+    public int getVida() {
+        return vida;
+    }
+
+    public void setVida(int vida) {
+        this.vida = vida;
+    }
+    
+    
     
     
     
@@ -268,6 +283,9 @@ public class Nodo implements Cloneable {
         
         clon.setCola(cola);
         clon.setPrioridad(prioridad);
+        
+        clon.setVida(vida);
+        
         return clon;
     }
     

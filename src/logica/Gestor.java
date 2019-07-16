@@ -61,7 +61,7 @@ public class Gestor implements Observable, Runnable {
         this.listosRoundRobin = round;
         //--------------------------------        
         this.terminados = new Cola();
-        this.retardo = 1000;
+        this.retardo = 2000;
         this.tiempo = 0;
         this.bloqueados = new Cola();
         this.observadores = new ArrayList();
@@ -236,7 +236,7 @@ public class Gestor implements Observable, Runnable {
     public void elegirCola(){
         
             if(this.getListosRoundRobin().numElementos() != 0 || this.enEjecucion.getCola() == 1){
-            System.out.println("Elijo Round");
+            //System.out.println("Elijo Round");
             atenderRR();
             this.setTiempo(this.getTiempo()+1);
             this.encolarProgramadosR();
@@ -247,7 +247,7 @@ public class Gestor implements Observable, Runnable {
             return;
         }
         if(this.getListosPrioridad().numElementos() != 0 || this.enEjecucion.getCola() == 2){
-            System.out.println("Elijo Prioridad");
+            //System.out.println("Elijo Prioridad");
             atenderPrioridad();
             this.setTiempo(this.getTiempo()+1);
             this.encolarProgramadosR();
@@ -258,7 +258,7 @@ public class Gestor implements Observable, Runnable {
             return;
         }
         if(this.getListosFIFO().numElementos() != 0 || this.enEjecucion.getCola() == 3){
-            System.out.println("Elijo FIFO");
+            //System.out.println("Elijo FIFO");
             atenderFIFO();
             this.setTiempo(this.getTiempo()+1);
             this.encolarProgramadosR();
@@ -331,7 +331,9 @@ public class Gestor implements Observable, Runnable {
                 this.enEjecucion.setRafagaParcial(this.enEjecucion.getRafagaParcial() + 1);
                 this.rafagaEjecutada++;
                 actualizarTiempoEspera();
+                disminuirVida();
                 actualizarEstado();
+                acomodarProcesos();
                 notificarTabla();
 
                 if (this.enEjecucion.rafaga == 0) {
@@ -384,7 +386,9 @@ public class Gestor implements Observable, Runnable {
                 this.enEjecucion.setRafagaParcial(this.enEjecucion.getRafagaParcial() + 1);
                 this.rafagaEjecutada++;
                 actualizarTiempoEspera();
+                disminuirVida();
                 actualizarEstado();
+                acomodarProcesos();
                 
 
                 if (this.enEjecucion.rafaga == 0) {
@@ -439,8 +443,9 @@ public class Gestor implements Observable, Runnable {
                 this.enEjecucion.setRafagaParcial(this.enEjecucion.getRafagaParcial() + 1);
                 this.rafagaEjecutada++;
                 actualizarTiempoEspera();
+                disminuirVida();
                 actualizarEstado();
-                
+                acomodarProcesos();
 
                 if (this.enEjecucion.rafaga == 0) {
                     Nodo copia = this.enEjecucion.clone();
@@ -774,6 +779,55 @@ public class Gestor implements Observable, Runnable {
                 this.listosFIFO.agregarNodo(d);
                 //notificarObservadores();
                 notificarLienzo();
+            }
+        }
+    }
+    
+    public void disminuirVida(){
+        
+        this.auxiliar = this.listosPrioridad.cabeza;
+        while (this.auxiliar.siguiente.id != -1) {
+            this.auxiliar = this.auxiliar.siguiente;
+            if(this.auxiliar.getVida()>0){
+                this.auxiliar.setVida(this.auxiliar.getVida()-1);
+            }
+            
+        }
+        
+        this.auxiliar = this.listosFIFO.cabeza;
+        while (this.auxiliar.siguiente.id != -1) {
+            this.auxiliar = this.auxiliar.siguiente;
+            if(this.auxiliar.getVida()>0){
+                this.auxiliar.setVida(this.auxiliar.getVida()-1);
+            }
+            
+        }
+        
+    }
+    
+    public void acomodarProcesos(){
+        this.auxiliar = this.getListosPrioridad().cabeza;
+        while(this.auxiliar.siguiente.id != -1){
+            this.auxiliar = this.auxiliar.siguiente;
+            if(this.auxiliar.getVida() == 0){
+                Nodo copia = this.auxiliar.clone();
+                copia.setCola(1);
+                copia.setVida((int) (20+Math.random()*30));
+                this.getListosRoundRobin().agregarNodo(copia);
+                this.getListosPrioridad().eliminarNodo(copia.id);
+            }
+        }
+        
+        this.auxiliar = this.getListosFIFO().cabeza;
+        
+        while(this.auxiliar.siguiente.id != -1){
+            this.auxiliar = this.auxiliar.siguiente;
+            if(this.auxiliar.getVida() == 0){
+                Nodo copia = this.auxiliar.clone();
+                copia.setCola(2);
+                copia.setVida((int) (30+Math.random()*40));
+                this.getListosPrioridad().agregarNodo(copia);
+                this.getListosFIFO().eliminarNodo(copia.id);
             }
         }
     }
