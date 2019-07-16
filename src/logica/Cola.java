@@ -25,13 +25,8 @@ public class Cola {
     
     public void agregarNodo(Nodo nodo){
         this.auxiliar = this.cabeza;
-        boolean encontrado = false;
-        while(this.auxiliar.siguiente.id!= -1 &&(!encontrado)){
-            if(this.auxiliar.siguiente.rafaga>nodo.rafaga){
-                encontrado = true;
-            }else{
-                this.auxiliar = this.auxiliar.siguiente;
-            }
+        while(this.auxiliar.siguiente.id != -1){
+            this.auxiliar = this.auxiliar.siguiente;
         }
         
         if (nodo.id == -2) {

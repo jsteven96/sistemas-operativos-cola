@@ -9,13 +9,13 @@ package logica;
  *
  * @author root
  */
-public class ColaPrioridad {
-    
+public class ColaPrioridadRafaga {
+
     public Nodo cabeza;
     private Nodo auxiliar;
     public int ultimo;
 
-    public ColaPrioridad(){
+    public ColaPrioridadRafaga() {
         this.cabeza = new Nodo();
         this.cabeza.setId(-1);
         this.cabeza.setRafaga(0);
@@ -28,7 +28,7 @@ public class ColaPrioridad {
         this.auxiliar = this.cabeza;
         boolean encontrado = false;
         while(this.auxiliar.siguiente.id!= -1 &&(!encontrado)){
-            if(this.auxiliar.siguiente.prioridad>nodo.prioridad){
+            if(this.auxiliar.siguiente.rafaga>nodo.rafaga){
                 encontrado = true;
             }else{
                 this.auxiliar = this.auxiliar.siguiente;
@@ -85,6 +85,5 @@ public class ColaPrioridad {
         }
         return this.auxiliar.siguiente;
     }
- 
     
 }

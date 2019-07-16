@@ -13,6 +13,7 @@ import javax.swing.*;
 import javax.swing.UIManager;
 import logica.Cola;
 import logica.ColaPrioridad;
+import logica.ColaPrioridadRafaga;
 import logica.Gestor;
 import logica.Nodo;
 
@@ -179,7 +180,10 @@ public class InterfazProcesos extends JFrame{
         this.miGestor = new Gestor(miCola, this.miColaPrioridad, this.miColaRound);
         this.miGestor.agregarNodo();
         this.miGestor.agregarNodo();
-        this.miGestor.agregarNodo();   
+        this.miGestor.agregarNodoP();
+        this.miGestor.agregarNodoP();
+        this.miGestor.agregarNodoF();   
+        this.miGestor.agregarNodoF();
     }
 
     public void agregarProceso() {
@@ -188,12 +192,6 @@ public class InterfazProcesos extends JFrame{
         //this.miDiagrama.dibujarProcesos();
     }
     
-    public void eliminarProceso(){
-        if(!"".equals(taIdEliminar.getText())){
-            this.miLienzo.eliminarNodo(Integer.parseInt(taIdEliminar.getText()));
-            this.miTabla.dibujarProcesos();
-        }
-    }
     
     public void atenderProceso(){
         this.miLienzo.atender();

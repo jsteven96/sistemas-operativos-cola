@@ -30,10 +30,7 @@ public class Controlador implements ActionListener {
         if(e.getActionCommand().equals(InterfazProcesos.AGREGAR_PROCESOS_R)){
             objInterfaz.agregarProceso();
         }
-        if(e.getActionCommand().equals(InterfazProcesos.ELIMINAR_PROCESOS)){
-            objInterfaz.eliminarProceso();
-        }
-        
+       
         if(e.getActionCommand().equals(InterfazProcesos.ATENDER_PROCESOS)){
             objInterfaz.atenderProceso();
         }

@@ -38,6 +38,8 @@ public class Nodo implements Cloneable {
     
     public int vecesBloqueado;
     
+    //Nuevo atributo para saber la cola en la que está
+    public int cola;
     public Nodo(){
         this.rafaga = (int) (1 + Math.random() * 7);
         //this.siguiente = null;
@@ -65,11 +67,19 @@ public class Nodo implements Cloneable {
         this.tEspera = new ArrayList();
         
         this.vecesBloqueado = 0;
+        
+        this.cola = 0;
     }    
     
     public void setId(int id) {
         this.id = id;
     }
+
+    public void setPrioridad(int prioridad) {
+        this.prioridad = prioridad;
+    }
+    
+    
 
     public int getPrioridad() {
         return prioridad;
@@ -218,6 +228,16 @@ public class Nodo implements Cloneable {
     public void setVecesBloqueado(int vecesBloqueado) {
         this.vecesBloqueado = vecesBloqueado;
     }
+
+    public int getCola() {
+        return cola;
+    }
+
+    public void setCola(int cola) {
+        this.cola = cola;
+    }
+    
+    
     
     
     
@@ -245,6 +265,9 @@ public class Nodo implements Cloneable {
         clon.settEspera(tEspera);
         clon.setVecesBloqueado(vecesBloqueado);
         clon.setRafagaParcial(rafagaParcial);
+        
+        clon.setCola(cola);
+        clon.setPrioridad(prioridad);
         return clon;
     }
     
